@@ -16,12 +16,13 @@ config :doorman, DoormanWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-
 # Mailer configuration
+mailgun_api_key = System.get_env("MAILGUN_API_KEY") || raise "environment variable MAILGUN_API_KEY is missing."
+mailgun_domain = System.get_env("MAILGUN_DOMAIN") || raise "environment variable MAILGUN_DOMAIN is missing."
 config :doorman, DoormanWeb.Mailer,
   adapter: Bamboo.MailgunAdapter,
-  api_key: System.get_env("MAILGUN_API_KEY") || raise "environment variable MAILGUN_API_KEY is missing.",
-  domain: System.get_env("MAILGUN_DOMAIN") || raise "environment variable MAILGUN_DOMAIN is missing."
+  api_key: mailgun_api_key,
+  domain: mailgun_domain
 
 # ## SSL Support
 #
