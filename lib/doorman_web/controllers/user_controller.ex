@@ -4,7 +4,7 @@ defmodule DoormanWeb.UserController do
   import DoormanWeb.Authorize
 
   alias Phauxth.Log
-  alias Doorman.{Accounts, Accounts.User}
+  alias Doorman.{Accounts, Accounts.User, Repo}
   alias DoormanWeb.{Auth.Token, Email}
 
   # the following plugs are defined in the controllers/authorize.ex file
@@ -44,7 +44,8 @@ defmodule DoormanWeb.UserController do
     render(conn, "show.html", user: user)
   end
 
-  def edit(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
+  def edit(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
+    user = Repo.get(User, id)
     changeset = Accounts.change_user(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
