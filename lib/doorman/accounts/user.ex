@@ -13,7 +13,8 @@ defmodule Doorman.Accounts.User do
     reset_sent_at: DateTime.t() | nil,
     sessions: [Session.t()] | %Ecto.Association.NotLoaded{},
     inserted_at: DateTime.t(),
-    updated_at: DateTime.t()
+    updated_at: DateTime.t(),
+    is_admin: boolean
   }
 
   schema "users" do
@@ -22,6 +23,7 @@ defmodule Doorman.Accounts.User do
     field :password_hash, :string
     field :confirmed_at, :utc_datetime
     field :reset_sent_at, :utc_datetime
+    field :is_admin, :boolean
     has_many :sessions, Session, on_delete: :delete_all
 
     timestamps()
@@ -41,6 +43,7 @@ defmodule Doorman.Accounts.User do
     |> unique_email
     |> validate_password(:password)
     |> put_pass_hash
+    |> put_change(:is_admin, false)
   end
 
   def confirm_changeset(%__MODULE__{} = user, confirmed_at) do
