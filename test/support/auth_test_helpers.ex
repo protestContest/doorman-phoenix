@@ -15,7 +15,7 @@ defmodule DoormanWeb.AuthTestHelpers do
   def add_admin(email) do
     user = %{email: email, password: "reallyHard2gue$$"}
     {:ok, user} = Accounts.create_user(user)
-    Accounts.make_admin(user)
+    Accounts.make_admin(user, true)
     user
   end
 

@@ -7,6 +7,7 @@ defmodule DoormanWeb.UserControllerTest do
 
   @create_attrs %{email: "bill@example.com", password: "hard2guess"}
   @update_attrs %{email: "william@example.com"}
+  @update_to_admin_attrs %{email: "william@example.com", is_admin: "true"}
   @invalid_attrs %{email: nil}
 
   setup %{conn: conn} do
@@ -100,6 +101,13 @@ defmodule DoormanWeb.UserControllerTest do
       assert html_response(conn, 403) =~ "Forbidden"
     end
 
+    @tag :edit
+    test "cannot see a form input for admin status", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      assert html_response(conn, 200)
+      refute html_response(conn, 200) =~ "Is admin"
+    end
+
     @tag :update
     test "can update their account when data is valid", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
@@ -120,6 +128,14 @@ defmodule DoormanWeb.UserControllerTest do
     test "cannot update other users' accounts", %{conn: conn, other_user: other_user} do
       conn = put(conn, Routes.user_path(conn, :update, other_user), user: @invalid_attrs)
       assert html_response(conn, 403) =~ "Forbidden"
+    end
+
+    @tag :update
+    test "cannot make their account an admin", %{conn: conn, user: user} do
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_to_admin_attrs)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+      updated_user = Accounts.get_user(user.id)
+      refute updated_user.is_admin
     end
 
     @tag :delete
@@ -151,12 +167,29 @@ defmodule DoormanWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Edit user"
     end
 
+    @tag :edit
+    test "can see a form input for admin status", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      assert html_response(conn, 200) =~ "Is admin"
+    end
+
     @tag :update
     test "can update other users' accounts", %{conn: conn, other_user: other_user} do
       conn = put(conn, Routes.user_path(conn, :update, other_user), user: @update_attrs)
       assert redirected_to(conn) == Routes.user_path(conn, :show, other_user)
       updated_user = Accounts.get_user(other_user.id)
       assert updated_user.email == "william@example.com"
+      conn = get conn,(Routes.user_path(conn, :show, other_user))
+      assert html_response(conn, 200) =~ "william@example.com"
+    end
+
+    @tag :update
+    test "can make another user's account an admin", %{conn: conn, other_user: other_user} do
+      conn = put(conn, Routes.user_path(conn, :update, other_user), user: @update_to_admin_attrs)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, other_user)
+      updated_user = Accounts.get_user(other_user.id)
+      assert updated_user.email == "william@example.com"
+      assert updated_user.is_admin
       conn = get conn,(Routes.user_path(conn, :show, other_user))
       assert html_response(conn, 200) =~ "william@example.com"
     end

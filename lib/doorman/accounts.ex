@@ -65,9 +65,9 @@ defmodule Doorman.Accounts do
     end
   end
 
-  def make_admin(%User{} = user) do
+  def make_admin(%User{} = user, is_admin) do
     user
-    |> User.change_admin(true)
+    |> User.change_admin(is_admin)
     |> Repo.update()
   end
 

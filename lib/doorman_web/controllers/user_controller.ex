@@ -29,7 +29,6 @@ defmodule DoormanWeb.UserController do
 
         Email.confirm_request(email, key)
 
-
         conn
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: Routes.session_path(conn, :new))
@@ -50,10 +49,17 @@ defmodule DoormanWeb.UserController do
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, %{"user" => user_params, "id" => id}) do
+  def update(
+      %Plug.Conn{assigns: %{current_user: current_user}} = conn,
+      %{"user" => user_params, "id" => id}) do
+
     user = Repo.get(User, id)
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->
+        if current_user.is_admin do
+          update_admin_status(user, user_params)
+        end
+
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: Routes.user_path(conn, :show, user))
@@ -71,5 +77,12 @@ defmodule DoormanWeb.UserController do
     |> delete_session(:phauxth_session_id)
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: Routes.user_path(conn, :index))
+  end
+
+  defp update_admin_status(user, %{"is_admin" => admin_param}) do
+    Accounts.make_admin(user, admin_param == "true")
+  end
+
+  defp update_admin_status(_user, _params) do
   end
 end
