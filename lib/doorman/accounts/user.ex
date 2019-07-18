@@ -33,7 +33,7 @@ defmodule Doorman.Accounts.User do
     user
     |> cast(attrs, [:email])
     |> validate_required([:email])
-    |> unique_email
+    |> unchanged_or_unique_email(user)
   end
 
   def create_changeset(%__MODULE__{} = user, attrs) do
@@ -103,4 +103,12 @@ defmodule Doorman.Accounts.User do
   end
 
   defp strong_password?(_), do: {:error, "The password is too short"}
+
+  defp unchanged_or_unique_email(changeset, user) do
+    if changeset.changes[:email] == user.email do
+      changeset
+    else
+      unique_email(changeset)
+    end
+  end
 end

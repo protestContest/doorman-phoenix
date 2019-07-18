@@ -44,7 +44,7 @@ defmodule DoormanWeb.UserController do
     render(conn, "show.html", user: user)
   end
 
-  def edit(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
+  def edit(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, %{"id" => id}) do
     user = Repo.get(User, id)
     changeset = Accounts.change_user(user)
     render(conn, "edit.html", user: user, changeset: changeset)
