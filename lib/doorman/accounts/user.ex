@@ -46,8 +46,12 @@ defmodule Doorman.Accounts.User do
     |> put_change(:is_admin, false)
   end
 
-  def admin_changeset(%__MODULE__{} = user, is_admin) do
+  def change_admin(%__MODULE__{} = user, is_admin) do
     change(user, %{is_admin: is_admin})
+  end
+
+  def change_admin(%Ecto.Changeset{} = changeset, is_admin) do
+    change(changeset, %{is_admin: is_admin})
   end
 
   def confirm_changeset(%__MODULE__{} = user, confirmed_at) do

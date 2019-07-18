@@ -53,14 +53,21 @@ defmodule Doorman.Accounts do
   """
   @spec update_user(User.t(), map) :: {:ok, User.t()} | changeset_error
   def update_user(%User{} = user, attrs) do
-    user
-    |> User.changeset(attrs)
-    |> Repo.update()
+    if user.is_admin do
+      user
+      |> User.changeset(attrs)
+      |> User.change_admin(attrs[:is_admin])
+      |> Repo.update()
+    else
+      user
+      |> User.changeset(attrs)
+      |> Repo.update()
+    end
   end
 
   def make_admin(%User{} = user) do
     user
-    |> User.admin_changeset(true)
+    |> User.change_admin(true)
     |> Repo.update()
   end
 

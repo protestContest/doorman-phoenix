@@ -15,6 +15,12 @@
     <%= error_tag f, :password %>
   <% end %>
 
+  <%= if @current_user && @current_user.is_admin do %>
+    <%= label f, :is_admin %>
+    <%= checkbox f, :is_admin %>
+    <%= error_tag f, :is_admin %>
+  <% end %>
+
   <div>
     <%= submit "Save" %>
   </div>

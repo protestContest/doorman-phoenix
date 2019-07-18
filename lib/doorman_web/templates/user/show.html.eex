@@ -5,6 +5,10 @@
     <strong>Email:</strong>
     <%= @user.email %>
   </li>
+  <li>
+    <strong>Is admin?</strong>
+    <%= if @user.is_admin, do: "Yes", else: "No" %>
+  </li>
 </ul>
 
 <span><%= link "Edit", to: Routes.user_path(@conn, :edit, @user) %></span><br>

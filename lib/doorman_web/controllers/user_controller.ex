@@ -50,7 +50,8 @@ defmodule DoormanWeb.UserController do
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do
+  def update(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, %{"user" => user_params, "id" => id}) do
+    user = Repo.get(User, id)
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->
         conn
