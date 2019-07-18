@@ -12,6 +12,13 @@ defmodule DoormanWeb.AuthTestHelpers do
     user
   end
 
+  def add_admin(email) do
+    user = %{email: email, password: "reallyHard2gue$$"}
+    {:ok, user} = Accounts.create_user(user)
+    Accounts.make_admin(user)
+    user
+  end
+
   def gen_key(email), do: Token.sign(%{"email" => email})
 
   def add_user_confirmed(email) do

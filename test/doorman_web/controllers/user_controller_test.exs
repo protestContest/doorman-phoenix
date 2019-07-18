@@ -16,7 +16,7 @@ defmodule DoormanWeb.UserControllerTest do
 
   describe "index" do
     test "lists all entries on index", %{conn: conn} do
-      user = add_user("reg@example.com")
+      user = add_admin("reg@example.com")
       conn = conn |> add_session(user) |> send_resp(:ok, "/")
       conn = get(conn, Routes.user_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing users"
@@ -25,6 +25,13 @@ defmodule DoormanWeb.UserControllerTest do
     test "renders /users error for nil user", %{conn: conn}  do
       conn = get(conn, Routes.user_path(conn, :index))
       assert redirected_to(conn) == Routes.session_path(conn, :new)
+    end
+
+    test "renders 401 for non-admin user", %{conn: conn} do
+      user = add_user("reg@example.com")
+      conn = conn |> add_session(user) |> send_resp(:ok, "/")
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert html_response(conn, 401) =~ "Unauthorized"
     end
   end
 
@@ -85,18 +92,20 @@ defmodule DoormanWeb.UserControllerTest do
   end
 
   describe "delete user" do
-    setup [:add_user_session]
-
-    test "deletes chosen user", %{conn: conn, user: user} do
+    test "deletes chosen user", %{conn: conn} do
+      user = add_admin("reg@example.com")
+      conn = conn |> add_session(user) |> send_resp(:ok, "/")
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       assert redirected_to(conn) == Routes.session_path(conn, :new)
       refute Accounts.get_user(user.id)
     end
 
-    test "cannot delete other user", %{conn: conn, user: user} do
+    test "cannot delete other user", %{conn: conn} do
+      user = add_user("reg@example.com")
+      conn = conn |> add_session(user) |> send_resp(:ok, "/")
       other = add_user("tony@example.com")
       conn = delete(conn, Routes.user_path(conn, :delete, other))
-      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+      assert html_response(conn, 401) =~ "Unauthorized"
       assert Accounts.get_user(other.id)
     end
   end

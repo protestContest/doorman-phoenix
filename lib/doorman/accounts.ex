@@ -58,6 +58,12 @@ defmodule Doorman.Accounts do
     |> Repo.update()
   end
 
+  def make_admin(%User{} = user) do
+    user
+    |> User.admin_changeset(true)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a user.
   """

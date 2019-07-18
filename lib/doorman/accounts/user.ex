@@ -46,6 +46,10 @@ defmodule Doorman.Accounts.User do
     |> put_change(:is_admin, false)
   end
 
+  def admin_changeset(%__MODULE__{} = user, is_admin) do
+    change(user, %{is_admin: is_admin})
+  end
+
   def confirm_changeset(%__MODULE__{} = user, confirmed_at) do
     change(user, %{confirmed_at: confirmed_at})
   end

@@ -8,8 +8,8 @@ defmodule DoormanWeb.UserController do
   alias DoormanWeb.{Auth.Token, Email}
 
   # the following plugs are defined in the controllers/authorize.ex file
-  plug :user_check when action in [:index, :show]
-  plug :id_check when action in [:edit, :update, :delete]
+  plug :admin_check when action in [:index, :delete]
+  plug :id_check when action in [:edit, :update]
 
   def index(conn, _) do
     users = Accounts.list_users()
@@ -40,7 +40,7 @@ defmodule DoormanWeb.UserController do
   end
 
   def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    user = if id == to_string(user.id), do: user, else: Accounts.get_user(id)
+    user = if !is_nil(user) and id == to_string(user.id), do: user, else: Accounts.get_user(id)
     render(conn, "show.html", user: user)
   end
 
