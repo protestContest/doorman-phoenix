@@ -63,10 +63,7 @@ defmodule DoormanWeb.Authorize do
     if id == to_string(current_user.id) || current_user.is_admin do
       conn
     else
-      conn
-      |> put_flash(:error, "You are not authorized to view this page")
-      |> redirect(to: Routes.user_path(conn, :show, current_user))
-      |> halt()
+      forbidden(conn)
     end
   end
 
@@ -86,11 +83,13 @@ defmodule DoormanWeb.Authorize do
     |> halt()
   end
 
-  defp need_admin(conn) do
+  defp need_admin(conn), do: forbidden(conn)
+
+  defp forbidden(conn) do
     conn
-    |> put_status(:unauthorized)
+    |> put_status(:forbidden)
     |> put_view(DoormanWeb.ErrorView)
-    |> render("401.html")
+    |> render("403.html")
     |> halt()
   end
 end

@@ -9,7 +9,7 @@ defmodule DoormanWeb.UserController do
 
   # the following plugs are defined in the controllers/authorize.ex file
   plug :admin_check when action in [:index, :delete]
-  plug :id_check when action in [:edit, :update]
+  plug :id_check when action in [:show, :edit, :update]
 
   def index(conn, _) do
     users = Accounts.list_users()
@@ -63,12 +63,13 @@ defmodule DoormanWeb.UserController do
     end
   end
 
-  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
+  def delete(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, %{"id" => id}) do
+    user = Repo.get(User, id)
     {:ok, _user} = Accounts.delete_user(user)
 
     conn
     |> delete_session(:phauxth_session_id)
     |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: Routes.session_path(conn, :new))
+    |> redirect(to: Routes.user_path(conn, :index))
   end
 end

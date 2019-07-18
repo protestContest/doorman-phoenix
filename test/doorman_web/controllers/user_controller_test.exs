@@ -14,66 +14,94 @@ defmodule DoormanWeb.UserControllerTest do
     {:ok, %{conn: conn}}
   end
 
-  describe "index" do
-    test "lists all entries on index", %{conn: conn} do
-      user = add_admin("reg@example.com")
-      conn = conn |> add_session(user) |> send_resp(:ok, "/")
-      conn = get(conn, Routes.user_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing users"
-    end
+  describe "guests" do
+    setup [:add_other_user]
 
-    test "renders /users error for nil user", %{conn: conn}  do
+    @tag :index
+    test "cannot list all users", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :index))
       assert redirected_to(conn) == Routes.session_path(conn, :new)
     end
 
-    test "renders 401 for non-admin user", %{conn: conn} do
-      user = add_user("reg@example.com")
-      conn = conn |> add_session(user) |> send_resp(:ok, "/")
-      conn = get(conn, Routes.user_path(conn, :index))
-      assert html_response(conn, 401) =~ "Unauthorized"
-    end
-  end
-
-  describe "renders forms" do
-    setup [:add_user_session]
-
-    test "renders form for new users", %{conn: conn} do
+    @tag :new
+    test "can see a form to create an account", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :new))
       assert html_response(conn, 200) =~ "New user"
     end
 
-    test "renders form for editing chosen user", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_path(conn, :edit, user))
-      assert html_response(conn, 200) =~ "Edit user"
-    end
-  end
-
-  describe "show user resource" do
-    setup [:add_user_session]
-
-    test "show chosen user's page", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Show user"
-    end
-  end
-
-  describe "create user" do
-    test "creates user when data is valid", %{conn: conn} do
+    @tag :create
+    test "can create a user with valid data", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       assert redirected_to(conn) == Routes.session_path(conn, :new)
     end
 
-    test "does not create user and renders errors when data is invalid", %{conn: conn} do
+    @tag :create
+    test "see form errors when creating a user with invalid data", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
       assert html_response(conn, 200) =~ "New user"
     end
+
+    @tag :show
+    test "cannot see a user's profile", %{conn: conn, other_user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert redirected_to(conn) == Routes.session_path(conn, :new)
+    end
+
+    @tag :edit
+    test "cannot see an edit form for other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = get(conn, Routes.user_path(conn, :edit, other_user))
+      assert redirected_to(conn) == Routes.session_path(conn, :new)
+    end
+
+    @tag :update
+    test "cannot update other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = put(conn, Routes.user_path(conn, :update, other_user), user: @invalid_attrs)
+      assert redirected_to(conn) == Routes.session_path(conn, :new)
+    end
+
+    @tag :delete
+    test "cannot delete other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = delete(conn, Routes.user_path(conn, :delete, other_user))
+      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert Accounts.get_user(other_user.id)
+    end
   end
 
-  describe "updates user" do
-    setup [:add_user_session]
+  describe "normal users" do
+    setup [:add_user_session, :add_other_user]
 
-    test "updates chosen user when data is valid", %{conn: conn, user: user} do
+    @tag :index
+    test "cannot list all users", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert html_response(conn, 403) =~ "Forbidden"
+    end
+
+    @tag :show
+    test "can see their own profile page", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show user"
+    end
+
+    @tag :show
+    test "cannot see other users' profile pages", %{conn: conn, other_user: other_user} do
+      conn = get(conn, Routes.user_path(conn, :show, other_user))
+      assert html_response(conn, 403) =~ "Forbidden"
+    end
+
+    @tag :edit
+    test "can see an edit form for their account", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      assert html_response(conn, 200) =~ "Edit user"
+    end
+
+    @tag :edit
+    test "cannot see an edit form for other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = get(conn, Routes.user_path(conn, :edit, other_user))
+      assert html_response(conn, 403) =~ "Forbidden"
+    end
+
+    @tag :update
+    test "can update their account when data is valid", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)
       updated_user = Accounts.get_user(user.id)
@@ -82,37 +110,80 @@ defmodule DoormanWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "william@example.com"
     end
 
-    test "does not update chosen user and renders errors when data is invalid", %{
-      conn: conn,
-      user: user
-    } do
+    @tag  :update
+    test "see form errors when updating their account with invalid data", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit user"
     end
+
+    @tag :update
+    test "cannot update other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = put(conn, Routes.user_path(conn, :update, other_user), user: @invalid_attrs)
+      assert html_response(conn, 403) =~ "Forbidden"
+    end
+
+    @tag :delete
+    test "cannot delete other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = delete(conn, Routes.user_path(conn, :delete, other_user))
+      assert html_response(conn, 403) =~ "Forbidden"
+      assert Accounts.get_user(other_user.id)
+    end
   end
 
-  describe "delete user" do
-    test "deletes chosen user", %{conn: conn} do
-      user = add_admin("reg@example.com")
-      conn = conn |> add_session(user) |> send_resp(:ok, "/")
-      conn = delete(conn, Routes.user_path(conn, :delete, user))
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
-      refute Accounts.get_user(user.id)
+  describe "admins" do
+    setup [:add_admin_session, :add_other_user]
+
+    @tag :index
+    test "can list all users", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert html_response(conn, 200) =~ "Listing users"
     end
 
-    test "cannot delete other user", %{conn: conn} do
-      user = add_user("reg@example.com")
-      conn = conn |> add_session(user) |> send_resp(:ok, "/")
-      other = add_user("tony@example.com")
-      conn = delete(conn, Routes.user_path(conn, :delete, other))
-      assert html_response(conn, 401) =~ "Unauthorized"
-      assert Accounts.get_user(other.id)
+    @tag :show
+    test "can see other users' profile pages", %{conn: conn, other_user: other_user} do
+      conn = get(conn, Routes.user_path(conn, :show, other_user))
+      assert html_response(conn, 200) =~ "Show user"
     end
+
+    @tag :edit
+    test "can see an edit form for other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = get(conn, Routes.user_path(conn, :edit, other_user))
+      assert html_response(conn, 200) =~ "Edit user"
+    end
+
+    @tag :update
+    test "can update other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = put(conn, Routes.user_path(conn, :update, other_user), user: @update_attrs)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, other_user)
+      updated_user = Accounts.get_user(other_user.id)
+      assert updated_user.email == "william@example.com"
+      conn = get conn,(Routes.user_path(conn, :show, other_user))
+      assert html_response(conn, 200) =~ "william@example.com"
+    end
+
+    @tag :delete
+    test "can delete other users' accounts", %{conn: conn, other_user: other_user} do
+      conn = delete(conn, Routes.user_path(conn, :delete, other_user))
+      assert redirected_to(conn) == Routes.user_path(conn, :index)
+      refute Accounts.get_user(other_user.id)
+    end
+
   end
 
   defp add_user_session(%{conn: conn}) do
     user = add_user("reg@example.com")
     conn = conn |> add_session(user) |> send_resp(:ok, "/")
     {:ok, %{conn: conn, user: user}}
+  end
+
+  defp add_admin_session(%{conn: conn}) do
+    user = add_admin("reg@example.com")
+    conn = conn |> add_session(user) |> send_resp(:ok, "/")
+    {:ok, %{conn: conn, user: user}}
+  end
+
+  defp add_other_user(%{conn: conn}) do
+    other_user = add_user("other@example.com")
+    {:ok, %{conn: conn, other_user: other_user}}
   end
 end
