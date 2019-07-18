@@ -1,3 +1,0 @@
-defmodule DoormanWeb.LayoutView do
-  use DoormanWeb, :view
-end
