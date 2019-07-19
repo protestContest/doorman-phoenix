@@ -1,0 +1,23 @@
+<h1>Show Door</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @door.name %>
+  </li>
+
+  <li>
+    <strong>Incoming number:</strong>
+    <%= @door.incoming_number %>
+  </li>
+
+  <li>
+    <strong>Forward number:</strong>
+    <%= @door.forward_number %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.door_path(@conn, :edit, @door) %></span>
+<span><%= link "Back", to: Routes.door_path(@conn, :index) %></span>

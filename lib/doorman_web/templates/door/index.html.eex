@@ -1,0 +1,30 @@
+<h1>Listing Doors</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Incoming number</th>
+      <th>Forward number</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for door <- @doors do %>
+    <tr>
+      <td><%= door.name %></td>
+      <td><%= door.incoming_number %></td>
+      <td><%= door.forward_number %></td>
+
+      <td>
+        <%= link "Show", to: Routes.door_path(@conn, :show, door) %>
+        <%= link "Edit", to: Routes.door_path(@conn, :edit, door) %>
+        <%= link "Delete", to: Routes.door_path(@conn, :delete, door), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Door", to: Routes.door_path(@conn, :new) %></span>

@@ -14,7 +14,9 @@ defmodule DoormanWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    resources "/users", UserController
+    resources "/users", UserController do
+      resources "/doors", DoorController
+    end
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     get "/confirm", ConfirmController, :index
     resources "/password_resets", PasswordResetController, only: [:new, :create]

@@ -4,6 +4,7 @@ defmodule Doorman.Accounts.User do
   import Ecto.Changeset
 
   alias Doorman.Sessions.Session
+  alias Doorman.Doors.Door
 
   @type t :: %__MODULE__{
     id: integer,
@@ -25,6 +26,7 @@ defmodule Doorman.Accounts.User do
     field :reset_sent_at, :utc_datetime
     field :is_admin, :boolean
     has_many :sessions, Session, on_delete: :delete_all
+    has_one :door, Door
 
     timestamps()
   end
