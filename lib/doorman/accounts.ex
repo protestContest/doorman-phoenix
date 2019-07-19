@@ -13,13 +13,20 @@ defmodule Doorman.Accounts do
   Returns the list of users.
   """
   @spec list_users() :: [User.t()]
-  def list_users, do: Repo.all(User)
+  def list_users do
+    Repo.all(User)
+    |> Repo.preload(:doors)
+  end
 
   @doc """
   Gets a single user.
   """
   @spec get_user(integer) :: User.t() | nil
-  def get_user(id), do: Repo.get(User, id)
+  def get_user(id) do
+    User
+    |> Repo.get(id)
+    |> Repo.preload(:doors)
+  end
 
   @doc """
   Gets a user based on the params.

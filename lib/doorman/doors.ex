@@ -102,4 +102,8 @@ defmodule Doorman.Doors do
   def change_door(%Door{} = door) do
     Door.changeset(door, %{})
   end
+
+  def load_for_user(%User{} = user) do
+    Repo.preload(user, :doors)
+  end
 end

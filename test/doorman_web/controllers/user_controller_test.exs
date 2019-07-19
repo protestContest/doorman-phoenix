@@ -80,7 +80,7 @@ defmodule DoormanWeb.UserControllerTest do
     @tag :show
     test "can see their own profile page", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Show user"
+      assert html_response(conn, 200) =~ user.email
     end
 
     @tag :show
@@ -158,7 +158,7 @@ defmodule DoormanWeb.UserControllerTest do
     @tag :show
     test "can see other users' profile pages", %{conn: conn, other_user: other_user} do
       conn = get(conn, Routes.user_path(conn, :show, other_user))
-      assert html_response(conn, 200) =~ "Show user"
+      assert html_response(conn, 200) =~ other_user.email
     end
 
     @tag :edit
