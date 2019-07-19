@@ -10,22 +10,17 @@
   <body>
     <header>
       <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
-            <%= if @current_user do %>
-              <li><%= link "Users", to: Routes.user_path(@conn, :index) %></li>
-              <li><%= link @current_user.email, to: Routes.user_path(@conn, :show, @current_user) %></li>
-              <li><%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete %></li>
-            <% else %>
-              <li><%= link "New user", to: Routes.user_path(@conn, :new) %></li>
-              <li><%= link "Login", to: Routes.session_path(@conn, :new) %></li>
-            <% end %>
-          </ul>
+        <div class="site-title">Doorman</div>
+        <nav role="navigation" class="site-nav">
+          <%= if @current_user do %>
+            <%= link "Doors", to: Routes.user_door_path(@conn, :index, @current_user), class: "site-nav__item" %>
+            <%= link "Profile", to: Routes.user_path(@conn, :show, @current_user), class: "site-nav__item" %>
+            <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "site-nav__item" %>
+          <% else %>
+            <%= link "Sign up", to: Routes.user_path(@conn, :new), class: "site-nav__item" %>
+            <%= link "Login", to: Routes.session_path(@conn, :new), class: "site-nav__item" %>
+          <% end %>
         </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
       </section>
     </header>
     <main role="main" class="container">

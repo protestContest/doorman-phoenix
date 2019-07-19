@@ -1,3 +1,24 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+
+body, html { margin: 0; padding: 0; }
+
+.site-title {
+  font-size: 3rem;
+}
+
+.site-nav {
+  display: flex;
+}
+.site-nav__item {
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.site-nav__item:last-child {
+  margin-right: initial;
+}
+.site-nav__item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
