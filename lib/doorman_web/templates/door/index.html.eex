@@ -1,4 +1,9 @@
-<h1>Listing Doors</h1>
+<header class="page-header">
+  <h1 class="page-header__title">Doors</h1>
+  <div class="page-header__actions">
+    <%= link "Add Door", to: Routes.user_door_path(@conn, :new, @user) %><br>
+  </div>
+</header>
 
 <table>
   <thead>

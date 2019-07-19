@@ -10,9 +10,10 @@ defmodule DoormanWeb.DoorController do
   plug :user_check
   plug :id_check
 
-  def index(conn, _params) do
+  def index(conn, %{"user_id" => user_id}) do
+    user = Accounts.get_user(user_id)
     doors = Doors.list_doors()
-    render(conn, "index.html", doors: doors)
+    render(conn, "index.html", doors: doors, user: user)
   end
 
   def new(conn, _params) do
