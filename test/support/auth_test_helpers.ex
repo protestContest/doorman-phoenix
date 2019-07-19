@@ -5,6 +5,7 @@ defmodule DoormanWeb.AuthTestHelpers do
 
   alias Doorman.{Accounts, Repo, Sessions}
   alias DoormanWeb.Auth.Token
+  alias DoormanWeb.Router.Helpers, as: Routes
 
   def add_user(email) do
     user = %{email: email, password: "reallyHard2gue$$"}
@@ -42,6 +43,27 @@ defmodule DoormanWeb.AuthTestHelpers do
     conn
     |> put_session(:phauxth_session_id, session_id)
     |> configure_session(renew: true)
+  end
+
+  def add_user_session(%{conn: conn}) do
+    user = add_user("reg@example.com")
+    conn = conn |> add_session(user) |> send_resp(:ok, "/")
+    {:ok, %{conn: conn, user: user}}
+  end
+
+  def add_admin_session(%{conn: conn}) do
+    user = add_admin("reg@example.com")
+    conn = conn |> add_session(user) |> send_resp(:ok, "/")
+    {:ok, %{conn: conn, user: user}}
+  end
+
+  def add_other_user(%{conn: conn}) do
+    other_user = add_user("other@example.com")
+    {:ok, %{conn: conn, other_user: other_user}}
+  end
+
+  def redirected_to_login(conn) do
+    redirected_to(conn) == Routes.session_path(conn, :new)
   end
 
   defp now do

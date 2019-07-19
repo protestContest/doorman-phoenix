@@ -52,15 +52,20 @@ defmodule DoormanWeb.Authorize do
 
   See the user controller for an example.
   """
-  def id_check(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts) do
-    need_login(conn)
-  end
+  def id_check(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts), do: need_login(conn)
+
+  def id_check(
+        %Plug.Conn{params: %{"user_id" => id}, assigns: %{current_user: current_user}} = conn,
+        _opts
+      ), do: check_id(conn, current_user, id)
 
   def id_check(
         %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
         _opts
-      ) do
-    if id == to_string(current_user.id) || current_user.is_admin do
+      ), do: check_id(conn, current_user, id)
+
+  defp check_id(conn, user, id) do
+    if id == to_string(user.id) || user.is_admin do
       conn
     else
       forbidden(conn)

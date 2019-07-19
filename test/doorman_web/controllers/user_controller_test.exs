@@ -21,7 +21,7 @@ defmodule DoormanWeb.UserControllerTest do
     @tag :index
     test "cannot list all users", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :index))
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert redirected_to_login(conn)
     end
 
     @tag :new
@@ -33,7 +33,7 @@ defmodule DoormanWeb.UserControllerTest do
     @tag :create
     test "can create a user with valid data", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert redirected_to_login(conn)
     end
 
     @tag :create
@@ -45,25 +45,25 @@ defmodule DoormanWeb.UserControllerTest do
     @tag :show
     test "cannot see a user's profile", %{conn: conn, other_user: user} do
       conn = get(conn, Routes.user_path(conn, :show, user))
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert redirected_to_login(conn)
     end
 
     @tag :edit
     test "cannot see an edit form for other users' accounts", %{conn: conn, other_user: other_user} do
       conn = get(conn, Routes.user_path(conn, :edit, other_user))
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert redirected_to_login(conn)
     end
 
     @tag :update
     test "cannot update other users' accounts", %{conn: conn, other_user: other_user} do
       conn = put(conn, Routes.user_path(conn, :update, other_user), user: @invalid_attrs)
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert redirected_to_login(conn)
     end
 
     @tag :delete
     test "cannot delete other users' accounts", %{conn: conn, other_user: other_user} do
       conn = delete(conn, Routes.user_path(conn, :delete, other_user))
-      assert redirected_to(conn) == Routes.session_path(conn, :new)
+      assert redirected_to_login(conn)
       assert Accounts.get_user(other_user.id)
     end
   end
@@ -203,20 +203,4 @@ defmodule DoormanWeb.UserControllerTest do
 
   end
 
-  defp add_user_session(%{conn: conn}) do
-    user = add_user("reg@example.com")
-    conn = conn |> add_session(user) |> send_resp(:ok, "/")
-    {:ok, %{conn: conn, user: user}}
-  end
-
-  defp add_admin_session(%{conn: conn}) do
-    user = add_admin("reg@example.com")
-    conn = conn |> add_session(user) |> send_resp(:ok, "/")
-    {:ok, %{conn: conn, user: user}}
-  end
-
-  defp add_other_user(%{conn: conn}) do
-    other_user = add_user("other@example.com")
-    {:ok, %{conn: conn, other_user: other_user}}
-  end
 end
