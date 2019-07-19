@@ -17,7 +17,6 @@ defmodule DoormanWeb.SessionController do
       {:ok, user} ->
         conn
         |> add_session(user, params)
-        |> put_flash(:info, "User successfully logged in.")
         |> redirect(to: get_session(conn, :request_path) || Routes.user_path(conn, :show, user))
 
       {:error, message} ->
@@ -33,7 +32,6 @@ defmodule DoormanWeb.SessionController do
         Sessions.delete_session(session)
         conn
         |> delete_session(:phauxth_session_id)
-        |> put_flash(:info, "User successfully logged out.")
         |> redirect(to: Routes.page_path(conn, :index))
 
       _ ->

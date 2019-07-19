@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
   <body>
-    <header>
-      <section class="container">
+    <header class="site-header">
+      <section class="container site-header__container">
         <div class="site-title">Doorman</div>
         <nav role="navigation" class="site-nav">
           <%= if @current_user do %>
