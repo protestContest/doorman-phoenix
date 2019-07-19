@@ -70,7 +70,6 @@ defmodule DoormanWeb.DoorControllerTest do
     end
   end
 
-  @tag :skip
   describe "normal users" do
     setup [:add_user_session, :add_door, :add_other_user, :add_other_door]
 
