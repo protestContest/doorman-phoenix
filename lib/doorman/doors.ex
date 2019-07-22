@@ -22,6 +22,17 @@ defmodule Doorman.Doors do
     Repo.all(Door)
   end
 
+  def list_doors(%User{} = user) do
+    Repo.all(
+      from u in "users",
+      join: d in "doors",
+      where:
+        d.user_id == u.id and
+        u.id == ^user.id,
+      select: %Door{id: d.id, name: d.name, user_id: d.user_id}
+    )
+  end
+
   @doc """
   Gets a single door.
 

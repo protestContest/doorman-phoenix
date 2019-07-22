@@ -8,10 +8,15 @@ defmodule DoormanWeb.DoorController do
   alias Doorman.Accounts
 
   plug :user_check
-  plug :door_ownership_check
+  plug :door_ownership_check when action in [:show, :edit, :update, :delete]
 
   def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
-    doors = Doors.list_doors()
+    doors = if current_user.is_admin do
+      Doors.list_doors()
+    else
+      Doors.list_doors(current_user)
+    end
+
     render(conn, "index.html", doors: doors, user: current_user)
   end
 
@@ -24,10 +29,10 @@ defmodule DoormanWeb.DoorController do
       %Plug.Conn{assigns: %{current_user: current_user}} = conn,
       %{"door" => door_params}) do
 
-    user = if !is_nil(door_params.user_id) do
-      Accounts.get_user(door_params.user_id)
+    user = if Map.has_key?(door_params, "user_id") and current_user.is_admin do
+      Accounts.get_user(door_params["user_id"])
     else
-      Accounts.get_user(current_user)
+      current_user
     end
 
     case Doors.create_door(door_params, user) do

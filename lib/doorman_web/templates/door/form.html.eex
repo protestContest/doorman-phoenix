@@ -17,6 +17,12 @@
   <%= text_input f, :forward_number %>
   <%= error_tag f, :forward_number %>
 
+  <%= if @current_user.is_admin do %>
+    <%= label f, :user_id %>
+    <%= text_input f, :user_id %>
+    <%= error_tag f, :user_id %>
+  <% end %>
+
   <div>
     <%= submit "Save" %>
   </div>

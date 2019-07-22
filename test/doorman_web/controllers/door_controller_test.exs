@@ -5,7 +5,8 @@ defmodule DoormanWeb.DoorControllerTest do
 
   alias Doorman.Doors
 
-  @create_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name"}
+  @create_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "User Door"}
+  @create_other_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "Other Door"}
   @update_attrs %{forward_number: "some updated forward_number", incoming_number: "some updated incoming_number", name: "some updated name"}
   @invalid_attrs %{forward_number: nil, incoming_number: nil, name: nil}
 
@@ -15,7 +16,7 @@ defmodule DoormanWeb.DoorControllerTest do
   end
 
   defp add_other_door(%{other_user: user}) do
-    {:ok, door} = Doors.create_door(@create_attrs, user)
+    {:ok, door} = Doors.create_door(@create_other_attrs, user)
     {:ok, %{other_door: door}}
   end
 
@@ -34,7 +35,7 @@ defmodule DoormanWeb.DoorControllerTest do
     end
 
     @tag :new
-    test "cannot see a form to create a new door", %{conn: conn, other_user: other_user} do
+    test "cannot see a form to create a new door", %{conn: conn} do
       conn = get(conn, Routes.door_path(conn, :new))
       assert redirected_to_login(conn)
     end
@@ -93,9 +94,12 @@ defmodule DoormanWeb.DoorControllerTest do
     end
 
     @tag :create
-    test "cannot create another user's door", %{conn: conn} do
-      conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
-      assert html_response(conn, 403) =~ "Forbidden"
+    test "cannot create another user's door", %{conn: conn, other_user: other_user} do
+      create_attrs = Map.put(@create_attrs, :user_id, other_user.id)
+      conn = post(conn, Routes.door_path(conn, :create), door: create_attrs)
+      assert %{id: id} = redirected_params(conn)
+      new_door = Doors.get_door!(id)
+      refute new_door.user_id == other_user.id
     end
 
     @tag :create
@@ -182,26 +186,28 @@ defmodule DoormanWeb.DoorControllerTest do
     end
 
     @tag :create
-    test "can create a user's door", %{conn: conn} do
-      conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
+    test "can create another user's door", %{conn: conn, other_user: other_user} do
+      create_attrs = Map.put(@create_attrs, :user_id, other_user.id)
+      conn = post(conn, Routes.door_path(conn, :create), door: create_attrs)
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.door_path(conn, :show, id)
+      new_door = Doors.get_door!(id)
+      assert new_door.user_id == other_user.id
     end
 
     @tag :show
-    test "can show a user's door", %{conn: conn, other_door: door} do
+    test "can show another user's door", %{conn: conn, other_door: door} do
       conn = get(conn, Routes.door_path(conn, :show, door))
       assert html_response(conn, 200)
     end
 
     @tag :edit
-    test "can see a form to edit a door", %{conn: conn, other_door: door} do
+    test "can see a form to edit another user's door", %{conn: conn, other_door: door} do
       conn = get(conn, Routes.door_path(conn, :edit, door))
       assert html_response(conn, 200)
     end
 
     @tag :update
-    test "can update a user's door", %{conn: conn, other_door: door} do
+    test "can update another user's door", %{conn: conn, other_door: door} do
       conn = put(conn, Routes.door_path(conn, :update, door), door: @update_attrs)
       assert redirected_to(conn) == Routes.door_path(conn, :show, door)
     end
