@@ -74,4 +74,45 @@ defmodule Doorman.DoorsTest do
       assert %Ecto.Changeset{} = Doors.change_door(door)
     end
   end
+
+  describe "grants" do
+    alias Doorman.Doors.Grant
+
+    @valid_attrs %{timeout: ~N[2010-04-17 14:00:00]}
+    @update_attrs %{timeout: ~N[2011-05-18 15:01:01]}
+    @invalid_attrs %{timeout: nil}
+
+    def grant_fixture(attrs \\ %{}) do
+      {:ok, grant} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Doors.create_grant()
+
+      grant
+    end
+
+    test "list_grants/0 returns all grants" do
+      grant = grant_fixture()
+      assert Doors.list_grants() == [grant]
+    end
+
+    test "get_grant!/1 returns the grant with given id" do
+      grant = grant_fixture()
+      assert Doors.get_grant!(grant.id) == grant
+    end
+
+    test "create_grant/1 with valid data creates a grant" do
+      assert {:ok, %Grant{} = grant} = Doors.create_grant(@valid_attrs)
+      assert grant.timeout == ~U[2010-04-17 14:00:00Z]
+    end
+
+    test "create_grant/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Doors.create_grant(@invalid_attrs)
+    end
+
+    test "change_grant/1 returns a grant changeset" do
+      grant = grant_fixture()
+      assert %Ecto.Changeset{} = Doors.change_grant(grant)
+    end
+  end
 end

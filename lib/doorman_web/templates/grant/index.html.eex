@@ -1,0 +1,20 @@
+<h1>Listing Grants</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Timeout</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for grant <- @grants do %>
+    <tr>
+      <td><%= grant.timeout %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Grant", to: Routes.grant_path(@conn, :new) %></span>

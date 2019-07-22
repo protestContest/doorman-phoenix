@@ -16,6 +16,7 @@ defmodule DoormanWeb.Router do
     get "/", PageController, :index
     resources "/users", UserController
     resources "/doors", DoorController
+    resources "/grants", GrantController, only: [:index, :new, :create]
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     get "/confirm", ConfirmController, :index
     resources "/password_resets", PasswordResetController, only: [:new, :create]

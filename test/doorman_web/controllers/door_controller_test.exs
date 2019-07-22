@@ -2,27 +2,17 @@ defmodule DoormanWeb.DoorControllerTest do
   use DoormanWeb.ConnCase
 
   import DoormanWeb.AuthTestHelpers
+  import DoormanWeb.DoorTestHelpers
 
   alias Doorman.Doors
 
   @create_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "User Door"}
-  @create_other_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "Other Door"}
   @update_attrs %{forward_number: "some updated forward_number", incoming_number: "some updated incoming_number", name: "some updated name"}
   @invalid_attrs %{forward_number: nil, incoming_number: nil, name: nil}
 
   setup %{conn: conn} do
     conn = conn |> bypass_through(DoormanWeb.Router, [:browser]) |> get("/")
     {:ok, %{conn: conn}}
-  end
-
-  defp add_other_door(%{other_user: user}) do
-    {:ok, door} = Doors.create_door(@create_other_attrs, user)
-    {:ok, %{other_door: door}}
-  end
-
-  defp add_door(%{user: user}) do
-    {:ok, door} = Doors.create_door(@create_attrs, user)
-    {:ok, %{door: door}}
   end
 
   describe "guests" do

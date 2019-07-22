@@ -1,0 +1,13 @@
+<h1>Show Grant</h1>
+
+<ul>
+
+  <li>
+    <strong>Timeout:</strong>
+    <%= @grant.timeout %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.grant_path(@conn, :edit, @grant) %></span>
+<span><%= link "Back", to: Routes.grant_path(@conn, :index) %></span>
