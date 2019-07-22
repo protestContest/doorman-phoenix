@@ -1,7 +1,7 @@
 <header class="page-header">
   <h1 class="page-header__title">Doors</h1>
   <div class="page-header__actions">
-    <%= link "Add Door", to: Routes.user_door_path(@conn, :new, @user) %><br>
+    <%= link "Add Door", to: Routes.door_path(@conn, :new) %><br>
   </div>
 </header>
 
@@ -23,9 +23,9 @@
       <td><%= door.forward_number %></td>
 
       <td>
-        <%= link "Show", to: Routes.user_door_path(@conn, :show, door.user_id, door) %>
-        <%= link "Edit", to: Routes.user_door_path(@conn, :edit, door.user_id, door) %>
-        <%= link "Delete", to: Routes.user_door_path(@conn, :delete, door.user_id, door), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= link "Show", to: Routes.door_path(@conn, :show, door) %>
+        <%= link "Edit", to: Routes.door_path(@conn, :edit, door) %>
+        <%= link "Delete", to: Routes.door_path(@conn, :delete, door), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>
     </tr>
 <% end %>

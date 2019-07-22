@@ -8,12 +8,11 @@ defmodule DoormanWeb.DoorController do
   alias Doorman.Accounts
 
   plug :user_check
-  plug :id_check
+  plug :door_ownership_check
 
-  def index(conn, %{"user_id" => user_id}) do
-    user = Accounts.get_user(user_id)
+  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
     doors = Doors.list_doors()
-    render(conn, "index.html", doors: doors, user: user)
+    render(conn, "index.html", doors: doors, user: current_user)
   end
 
   def new(conn, _params) do
@@ -22,16 +21,20 @@ defmodule DoormanWeb.DoorController do
   end
 
   def create(
-      %Plug.Conn{assigns: %{current_user: _current_user}} = conn,
-      %{"door" => door_params, "user_id" => user_id}) do
+      %Plug.Conn{assigns: %{current_user: current_user}} = conn,
+      %{"door" => door_params}) do
 
-    user = Accounts.get_user(user_id)
+    user = if !is_nil(door_params.user_id) do
+      Accounts.get_user(door_params.user_id)
+    else
+      Accounts.get_user(current_user)
+    end
 
     case Doors.create_door(door_params, user) do
       {:ok, door} ->
         conn
         |> put_flash(:info, "Door created successfully.")
-        |> redirect(to: Routes.user_door_path(conn, :show, user_id, door))
+        |> redirect(to: Routes.door_path(conn, :show, door))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -59,7 +62,7 @@ defmodule DoormanWeb.DoorController do
       {:ok, door} ->
         conn
         |> put_flash(:info, "Door updated successfully.")
-        |> redirect(to: Routes.user_door_path(conn, :show, door.user_id, door))
+        |> redirect(to: Routes.door_path(conn, :show, door))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", door: door, changeset: changeset)
@@ -68,13 +71,13 @@ defmodule DoormanWeb.DoorController do
 
   def delete(
       %Plug.Conn{assigns: %{current_user: _current_user}} = conn,
-      %{"id" => id, "user_id" => user_id}) do
+      %{"id" => id }) do
 
     door = Doors.get_door!(id)
     {:ok, _door} = Doors.delete_door(door)
 
     conn
     |> put_flash(:info, "Door deleted successfully.")
-    |> redirect(to: Routes.user_door_path(conn, :index, user_id))
+    |> redirect(to: Routes.door_path(conn, :index))
   end
 end

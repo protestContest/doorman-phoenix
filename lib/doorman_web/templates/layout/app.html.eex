@@ -13,7 +13,7 @@
         <div class="site-title">Doorman</div>
         <nav role="navigation" class="site-nav">
           <%= if @current_user do %>
-            <%= link "Doors", to: Routes.user_door_path(@conn, :index, @current_user), class: "site-nav__item" %>
+            <%= link "Doors", to: Routes.door_path(@conn, :index), class: "site-nav__item" %>
             <%= link "Profile", to: Routes.user_path(@conn, :show, @current_user), class: "site-nav__item" %>
             <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "site-nav__item" %>
           <% else %>

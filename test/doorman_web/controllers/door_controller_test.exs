@@ -28,44 +28,44 @@ defmodule DoormanWeb.DoorControllerTest do
     setup [:add_other_user, :add_other_door]
 
     @tag :index
-    test "cannot list a user's doors", %{conn: conn, other_user: other_user} do
-      conn = get(conn, Routes.user_door_path(conn, :index, other_user))
+    test "cannot list a user's doors", %{conn: conn} do
+      conn = get(conn, Routes.door_path(conn, :index))
       assert redirected_to_login(conn)
     end
 
     @tag :new
     test "cannot see a form to create a new door", %{conn: conn, other_user: other_user} do
-      conn = get(conn, Routes.user_door_path(conn, :new, other_user))
+      conn = get(conn, Routes.door_path(conn, :new))
       assert redirected_to_login(conn)
     end
 
     @tag :create
-    test "cannot create a user's door", %{conn: conn, other_user: other_user} do
-      conn = post(conn, Routes.user_door_path(conn, :create, other_user), door: @create_attrs)
+    test "cannot create a user's door", %{conn: conn} do
+      conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
       assert redirected_to_login(conn)
     end
 
     @tag :show
-    test "cannot show a user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :show, other_user, door))
+    test "cannot show a user's door", %{conn: conn, other_door: door} do
+      conn = get(conn, Routes.door_path(conn, :show, door))
       assert redirected_to_login(conn)
     end
 
     @tag :edit
-    test "cannot see a form to edit a door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :edit, other_user, door))
+    test "cannot see a form to edit a door", %{conn: conn, other_door: door} do
+      conn = get(conn, Routes.door_path(conn, :edit, door))
       assert redirected_to_login(conn)
     end
 
     @tag :update
-    test "cannot update a user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = put(conn, Routes.user_door_path(conn, :update, other_user, door), door: @update_attrs)
+    test "cannot update a user's door", %{conn: conn, other_door: door} do
+      conn = put(conn, Routes.door_path(conn, :update, door), door: @update_attrs)
       assert redirected_to_login(conn)
     end
 
     @tag :delete
-    test "cannot delete a door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = delete(conn, Routes.user_door_path(conn, :delete, other_user, door))
+    test "cannot delete a door", %{conn: conn, other_door: door} do
+      conn = delete(conn, Routes.door_path(conn, :delete, door))
       assert redirected_to_login(conn)
     end
   end
@@ -74,100 +74,95 @@ defmodule DoormanWeb.DoorControllerTest do
     setup [:add_user_session, :add_door, :add_other_user, :add_other_door]
 
     @tag :index
-    test "cannot list another user's doors", %{conn: conn, other_user: other_user} do
-      conn = get(conn, Routes.user_door_path(conn, :index, other_user.id))
-      assert html_response(conn, 403) =~ "Forbidden"
+    test "cannot list another user's doors", %{conn: conn, other_door: other_door} do
+      conn = get(conn, Routes.door_path(conn, :index))
+      response = html_response(conn, 200)
+      refute response =~ other_door.name
     end
 
     @tag :index
-    test "can list their own doors", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_door_path(conn, :index, user.id))
+    test "can list their own doors", %{conn: conn} do
+      conn = get(conn, Routes.door_path(conn, :index))
       assert html_response(conn, 200)
     end
 
     @tag :new
-    test "cannot see a form to create another user's door", %{conn: conn, other_user: other_user} do
-      conn = get(conn, Routes.user_door_path(conn, :new, other_user))
-      assert html_response(conn, 403) =~ "Forbidden"
-    end
-
-    @tag :new
-    test "can see a form to create their own door", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_door_path(conn, :new, user))
+    test "can see a form to create their own door", %{conn: conn} do
+      conn = get(conn, Routes.door_path(conn, :new))
       assert html_response(conn, 200) =~ "New Door"
     end
 
     @tag :create
-    test "cannot create another user's door", %{conn: conn, other_user: other_user} do
-      conn = post(conn, Routes.user_door_path(conn, :create, other_user), door: @create_attrs)
+    test "cannot create another user's door", %{conn: conn} do
+      conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
       assert html_response(conn, 403) =~ "Forbidden"
     end
 
     @tag :create
-    test "can create their own door", %{conn: conn, user: user} do
-      conn = post(conn, Routes.user_door_path(conn, :create, user), door: @create_attrs)
+    test "can create their own door", %{conn: conn} do
+      conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.user_door_path(conn, :show, user, id)
+      assert redirected_to(conn) == Routes.door_path(conn, :show, id)
     end
 
     @tag :create
-    test "sees form errors when creating a door with invalid data", %{conn: conn, user: user} do
-      conn = post(conn, Routes.user_door_path(conn, :create, user), door: @invalid_attrs)
+    test "sees form errors when creating a door with invalid data", %{conn: conn} do
+      conn = post(conn, Routes.door_path(conn, :create), door: @invalid_attrs)
       assert html_response(conn, 200) =~ "Oops"
     end
 
     @tag :show
-    test "cannot show another user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :show, other_user, door))
+    test "cannot show another user's door", %{conn: conn, other_door: door} do
+      conn = get(conn, Routes.door_path(conn, :show, door))
       assert html_response(conn, 403) =~ "Forbidden"
     end
 
     @tag :show
-    test "can show their own door", %{conn: conn, user: user, door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :show, user, door))
+    test "can show their own door", %{conn: conn, door: door} do
+      conn = get(conn, Routes.door_path(conn, :show, door))
       assert html_response(conn, 200)
     end
 
     @tag :edit
-    test "cannot see a form to edit another user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :edit, other_user, door))
+    test "cannot see a form to edit another user's door", %{conn: conn, other_door: door} do
+      conn = get(conn, Routes.door_path(conn, :edit, door))
       assert html_response(conn, 403) =~ "Forbidden"
     end
 
     @tag :edit
-    test "can see a form to edit their own door", %{conn: conn, user: user, door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :edit, user, door))
+    test "can see a form to edit their own door", %{conn: conn, door: door} do
+      conn = get(conn, Routes.door_path(conn, :edit, door))
       assert html_response(conn, 200)
     end
 
     @tag :update
-    test "cannot update another user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = put(conn, Routes.user_door_path(conn, :update, other_user, door), door: @update_attrs)
+    test "cannot update another user's door", %{conn: conn, other_door: door} do
+      conn = put(conn, Routes.door_path(conn, :update, door), door: @update_attrs)
       assert html_response(conn, 403) =~ "Forbidden"
     end
 
     @tag :update
-    test "can update their own door", %{conn: conn, user: user, door: door} do
-      conn = put(conn, Routes.user_door_path(conn, :update, user, door), door: @update_attrs)
-      assert redirected_to(conn) == Routes.user_door_path(conn, :show, user, door)
+    test "can update their own door", %{conn: conn, door: door} do
+      conn = put(conn, Routes.door_path(conn, :update, door), door: @update_attrs)
+      assert redirected_to(conn) == Routes.door_path(conn, :show, door)
     end
 
     @tag :update
-    test "sees form errors when updating a door with invalid data", %{conn: conn, user: user, door: door} do
-      conn = put(conn, Routes.user_door_path(conn, :update, user, door), door: @invalid_attrs)
+    test "sees form errors when updating a door with invalid data", %{conn: conn, door: door} do
+      conn = put(conn, Routes.door_path(conn, :update, door), door: @invalid_attrs)
       assert html_response(conn, 200) =~ "Oops"
     end
 
     @tag :delete
-    test "cannot delete another user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = delete(conn, Routes.user_door_path(conn, :delete, other_user, door))
+    test "cannot delete another user's door", %{conn: conn, other_door: door} do
+      conn = delete(conn, Routes.door_path(conn, :delete, door))
       assert html_response(conn, 403) =~ "Forbidden"
     end
 
     @tag :delete
-    test "can delete their own door", %{conn: conn, user: user, door: door} do
-      conn = delete(conn, Routes.user_door_path(conn, :delete, user, door))
-      assert redirected_to(conn) == Routes.user_door_path(conn, :index, user)
+    test "can delete their own door", %{conn: conn, door: door} do
+      conn = delete(conn, Routes.door_path(conn, :delete, door))
+      assert redirected_to(conn) == Routes.door_path(conn, :index)
     end
   end
 
@@ -175,46 +170,46 @@ defmodule DoormanWeb.DoorControllerTest do
     setup [:add_admin_session, :add_other_user, :add_other_door]
 
     @tag :index
-    test "can list another user's doors", %{conn: conn, other_user: other_user} do
-      conn = get(conn, Routes.user_door_path(conn, :index, other_user.id))
+    test "can list another user's doors", %{conn: conn} do
+      conn = get(conn, Routes.door_path(conn, :index))
       assert html_response(conn, 200)
     end
 
     @tag :new
-    test "can see a form to create another user's door", %{conn: conn, other_user: other_user} do
-      conn = get(conn, Routes.user_door_path(conn, :new, other_user))
-      assert html_response(conn, 200) =~ "New Door"
+    test "can see a form to create another user's door", %{conn: conn} do
+      conn = get(conn, Routes.door_path(conn, :new))
+      assert html_response(conn, 200) =~ "User"
     end
 
     @tag :create
-    test "can create a user's door", %{conn: conn, other_user: other_user} do
-      conn = post(conn, Routes.user_door_path(conn, :create, other_user), door: @create_attrs)
+    test "can create a user's door", %{conn: conn} do
+      conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.user_door_path(conn, :show, other_user, id)
+      assert redirected_to(conn) == Routes.door_path(conn, :show, id)
     end
 
     @tag :show
-    test "can show a user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :show, other_user, door))
+    test "can show a user's door", %{conn: conn, other_door: door} do
+      conn = get(conn, Routes.door_path(conn, :show, door))
       assert html_response(conn, 200)
     end
 
     @tag :edit
-    test "can see a form to edit a door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = get(conn, Routes.user_door_path(conn, :edit, other_user, door))
+    test "can see a form to edit a door", %{conn: conn, other_door: door} do
+      conn = get(conn, Routes.door_path(conn, :edit, door))
       assert html_response(conn, 200)
     end
 
     @tag :update
-    test "can update a user's door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = put(conn, Routes.user_door_path(conn, :update, other_user, door), door: @update_attrs)
-      assert redirected_to(conn) == Routes.user_door_path(conn, :show, other_user, door)
+    test "can update a user's door", %{conn: conn, other_door: door} do
+      conn = put(conn, Routes.door_path(conn, :update, door), door: @update_attrs)
+      assert redirected_to(conn) == Routes.door_path(conn, :show, door)
     end
 
     @tag :delete
-    test "can delete a door", %{conn: conn, other_user: other_user, other_door: door} do
-      conn = delete(conn, Routes.user_door_path(conn, :delete, other_user, door))
-      assert redirected_to(conn) == Routes.user_door_path(conn, :index, other_user)
+    test "can delete a door", %{conn: conn, other_door: door} do
+      conn = delete(conn, Routes.door_path(conn, :delete, door))
+      assert redirected_to(conn) == Routes.door_path(conn, :index)
     end
   end
 

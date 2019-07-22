@@ -11,6 +11,7 @@ defmodule DoormanWeb.Authorize do
 
   alias DoormanWeb.Router.Helpers, as: Routes
   alias Doorman.Accounts.User
+  alias Doorman.Doors
 
   @doc """
   Plug to only allow authenticated users to access the resource.
@@ -54,10 +55,13 @@ defmodule DoormanWeb.Authorize do
   """
   def id_check(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts), do: need_login(conn)
 
-  def id_check(
-        %Plug.Conn{params: %{"user_id" => id}, assigns: %{current_user: current_user}} = conn,
+  def door_ownership_check(
+        %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
         _opts
-      ), do: check_id(conn, current_user, id)
+      ) do
+    door = Doors.get_door!(id)
+    check_id(conn, current_user, door.user_id)
+  end
 
   def id_check(
         %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
