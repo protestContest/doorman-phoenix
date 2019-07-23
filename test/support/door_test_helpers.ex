@@ -26,6 +26,11 @@ defmodule DoormanWeb.DoorTestHelpers do
     {:ok, %{grant: grant}}
   end
 
+  def add_other_grant(%{other_door: other_door}) do
+    {:ok, grant} = Doors.add_door_grant(other_door, %{timeout: ~U[2011-05-18 15:01:01Z]})
+    {:ok, %{other_grant: grant}}
+  end
+
   defp now do
     DateTime.utc_now() |> DateTime.truncate(:second)
   end

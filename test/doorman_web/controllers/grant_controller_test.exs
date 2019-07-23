@@ -40,12 +40,19 @@ defmodule DoormanWeb.GrantControllerTest do
       :add_open_grant,
       :add_other_user,
       :add_other_door,
+      :add_other_grant
     ]
 
     @tag :index
     test "can list their own grants", %{conn: conn, grant: grant} do
       conn = get(conn, Routes.grant_path(conn, :index))
       assert html_response(conn, 200) =~ to_string(grant.timeout)
+    end
+
+    @tag :index
+    test "cannot list other users's grants", %{conn: conn, other_grant: other_grant} do
+      conn = get(conn, Routes.grant_path(conn, :index))
+      refute html_response(conn, 200) =~ to_string(other_grant.timeout)
     end
 
     @tag :new
@@ -59,13 +66,23 @@ defmodule DoormanWeb.GrantControllerTest do
       conn = post(conn, Routes.grant_path(conn, :create), grant: @create_attrs)
       assert redirected_to(conn) == Routes.grant_path(conn, :index)
     end
-
-    @tag :create
-    test "cannot create a grant for a door they don't own"
   end
 
   describe "admins" do
+    setup [
+      :add_admin_session,
+      :add_door,
+      :add_open_grant,
+      :add_other_user,
+      :add_other_door,
+      :add_other_grant
+    ]
 
+    @tag :index
+    test "can list other users's grants", %{conn: conn, other_grant: other_grant} do
+      conn = get(conn, Routes.grant_path(conn, :index))
+      assert html_response(conn, 200) =~ to_string(other_grant.timeout)
     end
+  end
 
 end

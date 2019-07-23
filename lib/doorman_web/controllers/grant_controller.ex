@@ -8,8 +8,13 @@ defmodule DoormanWeb.GrantController do
 
   plug :user_check
 
-  def index(conn, _params) do
-    grants = Doors.list_grants()
+  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
+    grants = if (current_user.is_admin) do
+      Doors.list_grants()
+    else
+      Doors.list_grants(current_user)
+    end
+
     render(conn, "index.html", grants: grants)
   end
 
@@ -20,7 +25,7 @@ defmodule DoormanWeb.GrantController do
 
   def create(conn, %{"grant" => grant_params}) do
     case Doors.create_grant(grant_params) do
-      {:ok, grant} ->
+      {:ok, _grant} ->
         conn
         |> put_flash(:info, "Grant created successfully.")
         |> redirect(to: Routes.grant_path(conn, :index))

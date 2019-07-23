@@ -79,7 +79,6 @@ defmodule Doorman.DoorsTest do
     alias Doorman.Doors.Grant
 
     @valid_attrs %{timeout: ~N[2010-04-17 14:00:00]}
-    @update_attrs %{timeout: ~N[2011-05-18 15:01:01]}
     @invalid_attrs %{timeout: nil}
 
     def grant_fixture(attrs \\ %{}) do

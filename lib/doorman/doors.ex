@@ -8,6 +8,7 @@ defmodule Doorman.Doors do
 
   alias Doorman.Doors.Door
   alias Doorman.Accounts.User
+  alias Doorman.Doors.Grant
 
   @doc """
   Returns the list of doors.
@@ -24,12 +25,11 @@ defmodule Doorman.Doors do
 
   def list_doors(%User{} = user) do
     Repo.all(
-      from u in "users",
-      join: d in "doors",
+      from d in Door,
+      join: u in User,
       where:
         d.user_id == u.id and
-        u.id == ^user.id,
-      select: %Door{id: d.id, name: d.name, user_id: d.user_id}
+        u.id == ^user.id
     )
   end
 
@@ -131,6 +131,18 @@ defmodule Doorman.Doors do
   """
   def list_grants do
     Repo.all(Grant)
+  end
+
+  def list_grants(%User{} = user) do
+    Repo.all(
+      from g in Grant,
+      join: d in Door,
+      join: u in User,
+      where:
+        g.door_id == d.id and
+        d.user_id == u.id and
+        u.id == ^user.id
+    )
   end
 
   @doc """
