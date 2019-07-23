@@ -4,7 +4,7 @@ defmodule DoormanWeb.DoorControllerTest do
   import DoormanWeb.AuthTestHelpers
   import DoormanWeb.DoorTestHelpers
 
-  alias Doorman.Doors
+  alias Doorman.Access
 
   @create_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "User Door"}
   @update_attrs %{forward_number: "some updated forward_number", incoming_number: "some updated incoming_number", name: "some updated name"}
@@ -88,7 +88,7 @@ defmodule DoormanWeb.DoorControllerTest do
       create_attrs = Map.put(@create_attrs, :user_id, other_user.id)
       conn = post(conn, Routes.door_path(conn, :create), door: create_attrs)
       assert %{id: id} = redirected_params(conn)
-      new_door = Doors.get_door!(id)
+      new_door = Access.get_door!(id)
       refute new_door.user_id == other_user.id
     end
 
@@ -180,7 +180,7 @@ defmodule DoormanWeb.DoorControllerTest do
       create_attrs = Map.put(@create_attrs, :user_id, other_user.id)
       conn = post(conn, Routes.door_path(conn, :create), door: create_attrs)
       assert %{id: id} = redirected_params(conn)
-      new_door = Doors.get_door!(id)
+      new_door = Access.get_door!(id)
       assert new_door.user_id == other_user.id
     end
 

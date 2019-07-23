@@ -1,14 +1,10 @@
-defmodule Doorman.Doors do
-  @moduledoc """
-  The Doors context.
-  """
-
+defmodule Doorman.Access do
   import Ecto.Query, warn: false
   alias Doorman.Repo
 
-  alias Doorman.Doors.Door
+  alias Doorman.Access.Door
   alias Doorman.Accounts.User
-  alias Doorman.Doors.Grant
+  alias Doorman.Access.Grant
 
   @doc """
   Returns the list of doors.
@@ -118,7 +114,7 @@ defmodule Doorman.Doors do
     Repo.preload(user, :doors)
   end
 
-  alias Doorman.Doors.Grant
+  alias Doorman.Access.Grant
 
   @doc """
   Returns the list of grants.

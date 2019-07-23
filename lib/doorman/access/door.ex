@@ -1,9 +1,9 @@
-defmodule Doorman.Doors.Door do
+defmodule Doorman.Access.Door do
   use Ecto.Schema
   import Ecto.Changeset
 
   alias Doorman.Accounts.User
-  alias Doorman.Doors.Grant
+  alias Doorman.Access.Grant
 
   schema "doors" do
     field :forward_number, :string

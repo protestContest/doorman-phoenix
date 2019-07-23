@@ -4,7 +4,7 @@ defmodule Doorman.Accounts.User do
   import Ecto.Changeset
 
   alias Doorman.Sessions.Session
-  alias Doorman.Doors.Door
+  alias Doorman.Access.Door
 
   @type t :: %__MODULE__{
     id: integer,

@@ -1,8 +1,8 @@
-defmodule Doorman.Doors.Grant do
+defmodule Doorman.Access.Grant do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Doorman.Doors.Door
+  alias Doorman.Access.Door
 
   schema "grants" do
     field :timeout, :utc_datetime

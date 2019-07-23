@@ -11,7 +11,7 @@ defmodule DoormanWeb.Authorize do
 
   alias DoormanWeb.Router.Helpers, as: Routes
   alias Doorman.Accounts.User
-  alias Doorman.Doors
+  alias Doorman.Access
 
   @doc """
   Plug to only allow authenticated users to access the resource.
@@ -64,7 +64,7 @@ defmodule DoormanWeb.Authorize do
         %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
         _opts
       ) do
-    door = Doors.get_door!(id)
+    door = Access.get_door!(id)
     check_id(conn, current_user, door.user_id)
   end
 

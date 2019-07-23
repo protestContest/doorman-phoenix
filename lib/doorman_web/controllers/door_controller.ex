@@ -3,8 +3,8 @@ defmodule DoormanWeb.DoorController do
 
   import DoormanWeb.Authorize
 
-  alias Doorman.Doors
-  alias Doorman.Doors.Door
+  alias Doorman.Access
+  alias Doorman.Access.Door
   alias Doorman.Accounts
 
   plug :user_check
@@ -12,16 +12,16 @@ defmodule DoormanWeb.DoorController do
 
   def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
     doors = if current_user.is_admin do
-      Doors.list_doors()
+      Access.list_doors()
     else
-      Doors.list_doors(current_user)
+      Access.list_doors(current_user)
     end
 
     render(conn, "index.html", doors: doors, user: current_user)
   end
 
   def new(conn, _params) do
-    changeset = Doors.change_door(%Door{})
+    changeset = Access.change_door(%Door{})
     render(conn, "new.html", changeset: changeset)
   end
 
@@ -35,7 +35,7 @@ defmodule DoormanWeb.DoorController do
       current_user
     end
 
-    case Doors.create_door(door_params, user) do
+    case Access.create_door(door_params, user) do
       {:ok, door} ->
         conn
         |> put_flash(:info, "Door created successfully.")
@@ -47,13 +47,13 @@ defmodule DoormanWeb.DoorController do
   end
 
   def show(conn, %{"id" => id}) do
-    door = Doors.get_door!(id)
+    door = Access.get_door!(id)
     render(conn, "show.html", door: door)
   end
 
   def edit(conn, %{"id" => id}) do
-    door = Doors.get_door!(id)
-    changeset = Doors.change_door(door)
+    door = Access.get_door!(id)
+    changeset = Access.change_door(door)
     render(conn, "edit.html", door: door, changeset: changeset)
   end
 
@@ -61,9 +61,9 @@ defmodule DoormanWeb.DoorController do
       %Plug.Conn{assigns: %{current_user: _current_user}} = conn,
       %{"id" => id, "door" => door_params}) do
 
-    door = Doors.get_door!(id)
+    door = Access.get_door!(id)
 
-    case Doors.update_door(door, door_params) do
+    case Access.update_door(door, door_params) do
       {:ok, door} ->
         conn
         |> put_flash(:info, "Door updated successfully.")
@@ -78,8 +78,8 @@ defmodule DoormanWeb.DoorController do
       %Plug.Conn{assigns: %{current_user: _current_user}} = conn,
       %{"id" => id }) do
 
-    door = Doors.get_door!(id)
-    {:ok, _door} = Doors.delete_door(door)
+    door = Access.get_door!(id)
+    {:ok, _door} = Access.delete_door(door)
 
     conn
     |> put_flash(:info, "Door deleted successfully.")

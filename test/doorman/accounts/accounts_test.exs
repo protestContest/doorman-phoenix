@@ -10,7 +10,7 @@ defmodule Doorman.AccountsTest do
 
   def fixture(:user, attrs \\ @create_attrs) do
     {:ok, user} = Accounts.create_user(attrs)
-    Doorman.Doors.load_for_user(user)
+    Doorman.Access.load_for_user(user)
   end
 
   describe "read user data" do
