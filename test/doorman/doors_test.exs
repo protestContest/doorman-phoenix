@@ -18,10 +18,10 @@ defmodule Doorman.DoorsTest do
     end
 
     def door_fixture(attrs \\ %{}) do
-      {:ok, door} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Access.create_door(user_fixture())
+      {:ok, door} = Access.create_user_door(
+        user_fixture(),
+        attrs |> Enum.into(@valid_attrs)
+      )
 
       door
     end
@@ -36,17 +36,17 @@ defmodule Doorman.DoorsTest do
       assert Access.get_door!(door.id) == door
     end
 
-    test "create_door/1 with valid data creates a door" do
+    test "create_user_door/2 with valid data creates a door" do
       user = user_fixture()
-      assert {:ok, %Door{} = door} = Access.create_door(@valid_attrs, user)
+      assert {:ok, %Door{} = door} = Access.create_user_door(user, @valid_attrs)
       assert door.forward_number == "some forward_number"
       assert door.incoming_number == "some incoming_number"
       assert door.name == "some name"
     end
 
-    test "create_door/1 with invalid data returns error changeset" do
+    test "create_user_door/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Access.create_door(@invalid_attrs, user)
+      assert {:error, %Ecto.Changeset{}} = Access.create_user_door(user, @invalid_attrs)
     end
 
     test "update_door/2 with valid data updates the door" do
@@ -82,10 +82,12 @@ defmodule Doorman.DoorsTest do
     @invalid_attrs %{timeout: nil}
 
     def grant_fixture(attrs \\ %{}) do
+      door = door_fixture()
       {:ok, grant} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Access.create_grant(door_fixture())
+        |> Enum.into(%{door_id: door.id})
+        |> Access.create_grant()
 
       grant
     end
@@ -102,13 +104,13 @@ defmodule Doorman.DoorsTest do
 
     test "create_grant/1 with valid data creates a grant" do
       door = door_fixture()
-      assert {:ok, %Grant{} = grant} = Access.create_grant(@valid_attrs, door)
+      attrs = Enum.into(@valid_attrs, %{door_id: door.id})
+      assert {:ok, %Grant{} = grant} = Access.create_grant(attrs)
       assert grant.timeout == ~U[2010-04-17 14:00:00Z]
     end
 
     test "create_grant/1 with invalid data returns error changeset" do
-      door = door_fixture()
-      assert {:error, %Ecto.Changeset{}} = Access.create_grant(@invalid_attrs, door)
+      assert {:error, %Ecto.Changeset{}} = Access.create_grant(@invalid_attrs)
     end
 
     test "change_grant/1 returns a grant changeset" do

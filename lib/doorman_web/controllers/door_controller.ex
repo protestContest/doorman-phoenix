@@ -35,7 +35,7 @@ defmodule DoormanWeb.DoorController do
       current_user
     end
 
-    case Access.create_door(door_params, user) do
+    case Access.create_user_door(user, door_params) do
       {:ok, door} ->
         conn
         |> put_flash(:info, "Door created successfully.")

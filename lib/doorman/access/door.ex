@@ -15,17 +15,10 @@ defmodule Doorman.Access.Door do
     timestamps()
   end
 
-  @doc false
-  def create_changeset(door, user, attrs) do
-    door
-    |> cast(attrs, [:name, :incoming_number, :forward_number])
-    |> change(user_id: user.id)
-    |> validate_required([:name, :incoming_number, :forward_number])
-  end
-
   def changeset(door, attrs) do
     door
     |> cast(attrs, [:name, :incoming_number, :forward_number])
     |> validate_required([:name, :incoming_number, :forward_number])
+    |> cast_assoc(:user, required: true)
   end
 end

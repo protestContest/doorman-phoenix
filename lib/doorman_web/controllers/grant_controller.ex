@@ -7,6 +7,7 @@ defmodule DoormanWeb.GrantController do
   alias Doorman.Access.Grant
 
   plug :user_check
+  plug :door_ownership_check when action in [:create]
 
   def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
     grants = if (current_user.is_admin) do
@@ -23,9 +24,8 @@ defmodule DoormanWeb.GrantController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"grant" => grant_params, "door_id" => door_id}) do
-    door = Access.get_door!(door_id)
-    case Access.add_door_grant(door, grant_params) do
+  def create(conn, %{"grant" => grant_params}) do
+    case Access.create_grant(grant_params) do
       {:ok, _grant} ->
         conn
         |> put_flash(:info, "Grant created successfully.")

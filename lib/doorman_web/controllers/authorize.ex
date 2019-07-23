@@ -56,15 +56,33 @@ defmodule DoormanWeb.Authorize do
   def id_check(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts), do: need_login(conn)
 
   def id_check(
-        %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
+        %Plug.Conn{
+          params: %{"id" => id},
+          assigns: %{current_user: current_user}
+        } = conn,
         _opts
       ), do: check_id(conn, current_user, id)
 
   def door_ownership_check(
-        %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
+        %Plug.Conn{
+          params: %{"id" => id},
+          assigns: %{current_user: current_user}
+        } = conn,
         _opts
       ) do
     door = Access.get_door!(id)
+    check_id(conn, current_user, door.user_id)
+  end
+
+  def door_ownership_check(
+      %Plug.Conn{
+        params: %{"grant" => %{"door_id" => door_id}},
+        assigns: %{current_user: current_user}
+      } = conn,
+      _opts
+    ) do
+
+    door = Access.get_door!(door_id)
     check_id(conn, current_user, door.user_id)
   end
 

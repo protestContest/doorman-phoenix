@@ -9,6 +9,10 @@
   <%= datetime_select f, :timeout %>
   <%= error_tag f, :timeout %>
 
+  <%= label f, :door_id %>
+  <%= text_input f, :door_id %>
+  <%= error_tag f, :door_id %>
+
   <div>
     <%= submit "Save" %>
   </div>
