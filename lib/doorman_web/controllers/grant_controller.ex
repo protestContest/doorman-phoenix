@@ -23,8 +23,9 @@ defmodule DoormanWeb.GrantController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"grant" => grant_params}) do
-    case Doors.create_grant(grant_params) do
+  def create(conn, %{"grant" => grant_params, "door_id" => door_id}) do
+    door = Doors.get_door!(door_id)
+    case Doors.add_door_grant(door, grant_params) do
       {:ok, _grant} ->
         conn
         |> put_flash(:info, "Grant created successfully.")

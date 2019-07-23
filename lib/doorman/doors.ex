@@ -173,9 +173,9 @@ defmodule Doorman.Doors do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_grant(attrs \\ %{}) do
+  def create_grant(attrs \\ %{}, %Door{id: _id} = door) do
     %Grant{}
-    |> Grant.changeset(attrs)
+    |> Grant.create_changeset(door, attrs)
     |> Repo.insert()
   end
 
