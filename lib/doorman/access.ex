@@ -70,7 +70,7 @@ defmodule Doorman.Access do
 
   def create_grant(attrs \\ %{}) do
     %Grant{}
-    |> Grant.create_changeset(attrs)
+    |> Grant.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -102,7 +102,7 @@ defmodule Doorman.Access do
 
   def grant_expired?(nil), do: true
 
-  defp last_grant(%Door{} = door) do
+  def last_grant(%Door{} = door) do
     grant = (
       from g in Grant,
       join: d in Door,
@@ -114,5 +114,13 @@ defmodule Doorman.Access do
 
     grant
   end
+
+  def open_door(%Door{} = door, seconds) do
+    timeout = DateTime.add(DateTime.utc_now(), seconds)
+    {:ok, grant} = create_grant(%{timeout: timeout, door_id: door.id})
+    grant
+  end
+
+  def close_door(%Door{} = door), do: open_door(door, 0)
 end
 

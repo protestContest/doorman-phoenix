@@ -91,6 +91,24 @@ defmodule Doorman.AccessTest do
       grant = grant_fixture(:open, door_fixture())
       assert %Ecto.Changeset{} = Access.change_grant(grant)
     end
+
+    test "grant_expired?/1 returns true if timestamp is older than now" do
+      grant = grant_fixture(:closed, door_fixture())
+      assert Access.grant_expired?(grant)
+    end
+
+    test "grant_expired?/1 returns false if timestamp is in the future" do
+      grant = grant_fixture(:open, door_fixture())
+      refute Access.grant_expired?(grant)
+    end
+
+    test "last_grant/1 returns the last inserted grant for a door" do
+      door = door_fixture()
+      old_grant = grant_fixture(:open, door)
+      new_grant = grant_fixture(:open, door)
+      assert old_grant != Access.last_grant(door)
+      assert new_grant == Access.last_grant(door)
+    end
   end
 
   describe "status" do
@@ -111,6 +129,24 @@ defmodule Doorman.AccessTest do
     test "door_status/1 returns :closed if no grants exist" do
       door = door_fixture()
       assert :closed = Access.door_status(door)
+    end
+  end
+
+  describe "control" do
+    test "open_door/2 creates a new grant with a future timeout" do
+      door = door_fixture()
+      grant = Access.open_door(door, 3600)
+      refute is_nil(grant)
+      assert grant == Access.last_grant(door)
+      refute Access.grant_expired?(grant)
+    end
+
+    test "close_door/1 creates a new grant with an expired timeout" do
+      door = door_fixture()
+      grant = Access.close_door(door)
+      refute is_nil(grant)
+      assert grant == Access.last_grant(door)
+      assert Access.grant_expired?(grant)
     end
   end
 

@@ -18,11 +18,4 @@ defmodule Doorman.Access.Grant do
     |> validate_required([:timeout, :door_id])
     |> foreign_key_constraint(:door_id)
   end
-
-  def create_changeset(grant, attrs) do
-    grant
-    |> cast(attrs, [:timeout, :door_id])
-    |> validate_required([:timeout, :door_id])
-    |> foreign_key_constraint(:door_id)
-  end
 end
