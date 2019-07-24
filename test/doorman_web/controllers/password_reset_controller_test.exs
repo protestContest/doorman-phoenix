@@ -37,7 +37,7 @@ defmodule DoormanWeb.PasswordResetControllerTest do
         post(conn, Routes.session_path(conn, :create),
           session: %{email: "gladys@example.com", password: "^hEsdg*F899"}
         )
-      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+      assert redirected_to(conn) == Routes.door_path(conn, :index)
     end
 
     test "reset password fails for incorrect key", %{conn: conn} do

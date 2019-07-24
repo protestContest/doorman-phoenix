@@ -17,7 +17,7 @@ defmodule DoormanWeb.SessionController do
       {:ok, user} ->
         conn
         |> add_session(user, params)
-        |> redirect(to: get_session(conn, :request_path) || Routes.user_path(conn, :show, user))
+        |> redirect(to: get_session(conn, :request_path) || Routes.door_path(conn, :index))
 
       {:error, message} ->
         conn
