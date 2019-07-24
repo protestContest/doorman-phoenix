@@ -1,30 +1,15 @@
-defmodule Doorman.DoorsTest do
+defmodule Doorman.AccessTest do
   use Doorman.DataCase
 
   alias Doorman.Access
+  import DoormanWeb.DoorTestHelpers
 
   describe "doors" do
     alias Doorman.Access.Door
-    alias Doorman.Accounts
 
-    @user_attrs %{email: "asdf@example.com", password: "asdfasdf"}
     @valid_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name"}
     @update_attrs %{forward_number: "some updated forward_number", incoming_number: "some updated incoming_number", name: "some updated name"}
     @invalid_attrs %{forward_number: nil, incoming_number: nil, name: nil}
-
-    def user_fixture do
-      {:ok, user} = Accounts.create_user(@user_attrs)
-      user
-    end
-
-    def door_fixture(attrs \\ %{}) do
-      {:ok, door} = Access.create_user_door(
-        user_fixture(),
-        attrs |> Enum.into(@valid_attrs)
-      )
-
-      door
-    end
 
     test "list_doors/0 returns all doors" do
       door = door_fixture()
@@ -81,24 +66,13 @@ defmodule Doorman.DoorsTest do
     @valid_attrs %{timeout: ~N[2010-04-17 14:00:00]}
     @invalid_attrs %{timeout: nil}
 
-    def grant_fixture(attrs \\ %{}) do
-      door = door_fixture()
-      {:ok, grant} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Enum.into(%{door_id: door.id})
-        |> Access.create_grant()
-
-      grant
-    end
-
     test "list_grants/0 returns all grants" do
-      grant = grant_fixture()
+      grant = grant_fixture(:open, door_fixture())
       assert Access.list_grants() == [grant]
     end
 
     test "get_grant!/1 returns the grant with given id" do
-      grant = grant_fixture()
+      grant = grant_fixture(:open, door_fixture())
       assert Access.get_grant!(grant.id) == grant
     end
 
@@ -114,8 +88,30 @@ defmodule Doorman.DoorsTest do
     end
 
     test "change_grant/1 returns a grant changeset" do
-      grant = grant_fixture()
+      grant = grant_fixture(:open, door_fixture())
       assert %Ecto.Changeset{} = Access.change_grant(grant)
     end
   end
+
+  describe "status" do
+    test "door_status/1 returns :open if last grant is valid" do
+      door = door_fixture()
+      _grant = grant_fixture(:closed, door)
+      _grant = grant_fixture(:open, door)
+      assert :open = Access.door_status(door)
+    end
+
+    test "door_status/1 returns :closed if last grant is expired" do
+      door = door_fixture()
+      _grant = grant_fixture(:open, door)
+      _grant = grant_fixture(:closed, door)
+      assert :closed = Access.door_status(door)
+    end
+
+    test "door_status/1 returns :closed if no grants exist" do
+      door = door_fixture()
+      assert :closed = Access.door_status(door)
+    end
+  end
+
 end

@@ -87,4 +87,32 @@ defmodule Doorman.Access do
   def change_grant(%Grant{} = grant) do
     Grant.changeset(grant, %{})
   end
+
+  def door_status(%Door{} = door) do
+    if grant_expired?(last_grant(door)), do: :closed, else: :open
+  end
+
+  def grant_expired?(%Grant{} = grant) do
+    if DateTime.compare(DateTime.utc_now(), grant.timeout) == :lt do
+      false
+    else
+      true
+    end
+  end
+
+  def grant_expired?(nil), do: true
+
+  defp last_grant(%Door{} = door) do
+    grant = (
+      from g in Grant,
+      join: d in Door,
+      where: d.id == ^door.id,
+      order_by: [desc: :inserted_at, desc: :id]
+    )
+    |> limit(1)
+    |> Repo.one
+
+    grant
+  end
 end
+

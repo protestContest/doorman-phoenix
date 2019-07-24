@@ -44,7 +44,7 @@ defmodule DoormanWeb.GrantControllerTest do
     ]
 
     @tag :index
-    test "can list their own grants", %{conn: conn, grant: grant} do
+    test "can list their own grants", %{conn: conn, open_grant: grant} do
       conn = get(conn, Routes.grant_path(conn, :index))
       assert html_response(conn, 200) =~ to_string(grant.timeout)
     end
