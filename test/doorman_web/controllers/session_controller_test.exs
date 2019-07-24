@@ -26,7 +26,7 @@ defmodule DoormanWeb.SessionControllerTest do
   end
 
   describe "create session" do
-    test "login succeeds", %{conn: conn, user: user} do
+    test "login succeeds", %{conn: conn} do
       conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
       assert redirected_to(conn) == Routes.door_path(conn, :index)
     end

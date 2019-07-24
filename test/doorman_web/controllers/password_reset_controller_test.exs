@@ -26,7 +26,7 @@ defmodule DoormanWeb.PasswordResetControllerTest do
   end
 
   describe "update password reset" do
-    test "reset password succeeds for correct key", %{conn: conn, user: user} do
+    test "reset password succeeds for correct key", %{conn: conn} do
       valid_attrs = %{key: gen_key("gladys@example.com"), password: "^hEsdg*F899"}
 
       reset_conn =
