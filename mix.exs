@@ -20,7 +20,7 @@ defmodule Doorman.MixProject do
   def application do
     [
       mod: {Doorman.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :timex]
     ]
   end
 
@@ -45,7 +45,8 @@ defmodule Doorman.MixProject do
       {:phauxth, "~> 2.1.0"},
       {:argon2_elixir, "~> 2.0"},
       {:bamboo, "~> 1.1"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:timex, "~> 3.6.1"}
     ]
   end
 

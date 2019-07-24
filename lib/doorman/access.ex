@@ -106,7 +106,7 @@ defmodule Doorman.Access do
     grant = (
       from g in Grant,
       join: d in Door,
-      where: d.id == ^door.id,
+      where: g.door_id == ^door.id,
       order_by: [desc: :inserted_at, desc: :id]
     )
     |> limit(1)

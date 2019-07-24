@@ -9,23 +9,21 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Incoming number</th>
-      <th>Forward number</th>
-
+      <th>Status</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
 <%= for door <- @doors do %>
     <tr>
-      <td><%= door.name %></td>
-      <td><%= door.incoming_number %></td>
-      <td><%= door.forward_number %></td>
-
+      <td><%= link door.name, to: Routes.door_path(@conn, :show, door) %></td>
+      <td><%= door_status(door) %></td>
       <td>
-        <%= link "Show", to: Routes.door_path(@conn, :show, door) %>
-        <%= link "Edit", to: Routes.door_path(@conn, :edit, door) %>
-        <%= link "Delete", to: Routes.door_path(@conn, :delete, door), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= if Access.door_status(door) == :closed do %>
+          <%= button "Open", to: Routes.door_path(@conn, :open, door.id) %>
+        <% else %>
+          <%= button "Close", to: Routes.door_path(@conn, :close, door.id) %>
+        <% end %>
       </td>
     </tr>
 <% end %>

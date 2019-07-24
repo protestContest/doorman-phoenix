@@ -22,6 +22,9 @@ defmodule DoormanWeb.Router do
     resources "/password_resets", PasswordResetController, only: [:new, :create]
     get "/password_resets/edit", PasswordResetController, :edit
     put "/password_resets/update", PasswordResetController, :update
+
+    post "/doors/:id/open", DoorController, :open
+    post "/doors/:id/close", DoorController, :close
   end
 
 end

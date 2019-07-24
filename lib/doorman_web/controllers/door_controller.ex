@@ -8,7 +8,9 @@ defmodule DoormanWeb.DoorController do
   alias Doorman.Accounts
 
   plug :user_check
-  plug :door_ownership_check when action in [:show, :edit, :update, :delete]
+  plug :door_ownership_check when action in [:show, :edit, :update, :delete, :open, :close]
+
+  @default_timeout 1800 # half an hour
 
   def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
     doors = if current_user.is_admin do
@@ -83,6 +85,22 @@ defmodule DoormanWeb.DoorController do
 
     conn
     |> put_flash(:info, "Door deleted successfully.")
+    |> redirect(to: Routes.door_path(conn, :index))
+  end
+
+  def open(conn, %{"id" => id}) do
+    door = Access.get_door!(id)
+    Access.open_door(door, @default_timeout)
+
+    conn
+    |> redirect(to: Routes.door_path(conn, :index))
+  end
+
+  def close(conn, %{"id" => id}) do
+    door = Access.get_door!(id)
+    Access.close_door(door)
+
+    conn
     |> redirect(to: Routes.door_path(conn, :index))
   end
 end
