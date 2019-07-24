@@ -12,7 +12,7 @@ defmodule Doorman.Access.Door do
     belongs_to :user, User
     has_many :grants, Grant
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(door, attrs) do

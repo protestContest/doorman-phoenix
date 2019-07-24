@@ -28,7 +28,7 @@ defmodule Doorman.Accounts.User do
     has_many :sessions, Session, on_delete: :delete_all
     has_many :doors, Door
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(%__MODULE__{} = user, attrs) do

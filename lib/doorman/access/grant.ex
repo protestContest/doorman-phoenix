@@ -8,7 +8,7 @@ defmodule Doorman.Access.Grant do
     field :timeout, :utc_datetime
     belongs_to :door, Door
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
