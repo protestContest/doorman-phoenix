@@ -2,13 +2,31 @@ defmodule DoormanWeb.DoorView do
   use DoormanWeb, :view
   use Timex
 
-  alias Doorman.Access.Door
+  alias Doorman.Access.{Door, Grant}
   alias Doorman.Access
 
   def door_status(%Door{} = door) do
     case Access.door_status(door) do
       :closed -> "Closed"
       :open -> "Open until #{format_time(Access.last_grant(door).timeout)}"
+    end
+  end
+
+  def grant_time(%Grant{} = grant) do
+    localtime = Timezone.convert(grant.timeout, Timezone.local())
+    {:ok, timestr} = Timex.format(localtime, "{Mshort} {D} {YYYY} {h12}:{m} {AM}")
+    timestr
+  end
+
+  def grant_duration(%Grant{} = grant) do
+    seconds = Access.grant_duration(grant)
+    minutes = div seconds, 60
+    hours = div minutes, 60
+
+    cond do
+      seconds == 0 -> "-"
+      seconds < 3600 -> "#{minutes}min"
+      true -> "#{hours}hr #{minutes}min"
     end
   end
 

@@ -19,5 +19,25 @@
 
 </ul>
 
+<h2>Recent Grants</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Began</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for grant <- @grants do %>
+    <tr>
+      <td><%= Access.grant_type(grant) %></td>
+      <td><%= grant_time(grant) %></td>
+      <td><%= grant_duration(grant) %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
 <span><%= link "Edit", to: Routes.door_path(@conn, :edit, @door) %></span>
 <span><%= link "Back", to: Routes.door_path(@conn, :index) %></span>

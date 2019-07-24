@@ -50,7 +50,8 @@ defmodule DoormanWeb.DoorController do
 
   def show(conn, %{"id" => id}) do
     door = Access.get_door!(id)
-    render(conn, "show.html", door: door)
+    grants = Access.recent_grants(door)
+    render(conn, "show.html", door: door, grants: grants)
   end
 
   def edit(conn, %{"id" => id}) do

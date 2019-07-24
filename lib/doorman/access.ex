@@ -122,5 +122,26 @@ defmodule Doorman.Access do
   end
 
   def close_door(%Door{} = door), do: open_door(door, 0)
+
+  def recent_grants(%Door{} = door) do
+    grants = (
+      from g in Grant,
+      join: d in Door,
+      where: g.door_id == ^door.id,
+      order_by: [desc: :inserted_at, desc: :id]
+    )
+    |> limit(30)
+    |> Repo.all
+
+    grants
+  end
+
+  def grant_duration(%Grant{} = grant) do
+    DateTime.diff(grant.timeout, grant.inserted_at)
+  end
+
+  def grant_type(%Grant{} = grant) do
+    if grant_duration(grant) == 0, do: :closed, else: :open
+  end
 end
 

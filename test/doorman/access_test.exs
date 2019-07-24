@@ -63,7 +63,7 @@ defmodule Doorman.AccessTest do
   describe "grants" do
     alias Doorman.Access.Grant
 
-    @valid_attrs %{timeout: ~N[2010-04-17 14:00:00]}
+    @valid_attrs %{timeout: ~U[2010-04-17 14:00:00Z]}
     @invalid_attrs %{timeout: nil}
 
     test "list_grants/0 returns all grants" do
@@ -108,6 +108,32 @@ defmodule Doorman.AccessTest do
       new_grant = grant_fixture(:open, door)
       assert old_grant != Access.last_grant(door)
       assert new_grant == Access.last_grant(door)
+    end
+
+    test "recent_grants/1 returns the last grants for a door" do
+      user = user_fixture()
+      door = door_fixture(user)
+      other_door = door_fixture(user)
+      old_grant = grant_fixture(:open, door)
+      new_grant = grant_fixture(:open, door)
+      other_grant = grant_fixture(:open, other_door)
+      grant_list = Access.recent_grants(door)
+      assert Enum.member?(grant_list, old_grant)
+      assert Enum.member?(grant_list, new_grant)
+      refute Enum.member?(grant_list, other_grant)
+    end
+
+    test "grant_duration/1 returns the number of seconds for a grant" do
+      grant = grant_fixture(1800, door_fixture())
+      assert 1800 == Access.grant_duration(grant)
+    end
+
+    test "grant_type/1 returns whether a grant was to open or close a door" do
+      door = door_fixture()
+      close_grant = grant_fixture(:closed, door)
+      open_grant = grant_fixture(:open, door)
+      assert :closed == Access.grant_type(close_grant)
+      assert :open == Access.grant_type(open_grant)
     end
   end
 
