@@ -5,6 +5,7 @@ defmodule DoormanWeb.GrantController do
 
   alias Doorman.Access
   alias Doorman.Access.Grant
+  alias DoormanWeb.DoorView
 
   plug :user_check
   plug :door_ownership_check when action in [:create]
@@ -24,16 +25,12 @@ defmodule DoormanWeb.GrantController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"grant" => grant_params}) do
-    case Access.create_grant(grant_params) do
-      {:ok, _grant} ->
-        conn
-        |> put_flash(:info, "Grant created successfully.")
-        |> redirect(to: Routes.grant_path(conn, :index))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
+  def create(conn, %{"grant" => %{"door_id" => door_id, "duration" => duration} = grant_params}) do
+    door = Access.get_door!(door_id)
+    grant = Access.open_door(door, String.to_integer(duration))
+    conn
+    |> put_flash(:info, "Door open until #{DoorView.format_time(grant.timeout)}")
+    |> redirect(to: Routes.door_path(conn, :show, grant.door_id))
   end
 
 end

@@ -5,13 +5,19 @@
     </div>
   <% end %>
 
-  <%= label f, :timeout %>
-  <%= datetime_select f, :timeout %>
-  <%= error_tag f, :timeout %>
+  <%= label f, :duration %>
+  <%= range_input f, :duration, value: "3600", min: "1800", max: "10800", step: "1800", onchange: "setLabel(this, 'duration')" %>
+  <span id="duration">60 min</span>
+  <script type="text/javascript">
+    function setLabel(source, id) {
+      var dest = document.getElementById(id);
+      var seconds = source.value;
+      var min = seconds / 60;
+      dest.innerText = min + " min";
+    }
+  </script>
 
-  <%= label f, :door_id %>
-  <%= text_input f, :door_id %>
-  <%= error_tag f, :door_id %>
+  <%= hidden_input f, :door_id %>
 
   <div>
     <%= submit "Save" %>

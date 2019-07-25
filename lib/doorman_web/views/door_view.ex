@@ -32,7 +32,7 @@ defmodule DoormanWeb.DoorView do
     end
   end
 
-  defp format_time(timestamp) do
+  def format_time(timestamp) do
     localtime = Timex.Timezone.convert(timestamp, Timex.Timezone.local())
     {:ok, timestr} = Timex.format(localtime, "{h12}:{m} {AM}")
     timestr

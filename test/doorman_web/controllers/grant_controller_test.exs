@@ -65,7 +65,8 @@ defmodule DoormanWeb.GrantControllerTest do
     test "can create a grant", %{conn: conn, door: door} do
       create_attrs = Map.put(@create_attrs, "door_id", door.id)
       conn = post(conn, Routes.grant_path(conn, :create), grant: create_attrs)
-      assert redirected_to(conn) == Routes.grant_path(conn, :index)
+      assert %{id: door_id} = redirected_params(conn)
+      assert redirected_to(conn) == Routes.door_path(conn, :show, door_id)
     end
   end
 
