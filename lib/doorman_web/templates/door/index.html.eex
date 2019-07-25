@@ -9,6 +9,9 @@
   <thead>
     <tr>
       <th>Name</th>
+      <%= if @current_user.is_admin do %>
+      <th>Owner</th>
+      <% end %>
       <th>Status</th>
       <th></th>
     </tr>
@@ -17,6 +20,9 @@
 <%= for door <- @doors do %>
     <tr>
       <td><%= link door.name, to: Routes.door_path(@conn, :show, door) %></td>
+      <%= if @current_user.is_admin do %>
+      <td><%= door.user.email %></td>
+      <% end %>
       <td><%= door_status(door) %></td>
       <td>
         <%= if Access.door_status(door) == :closed do %>
