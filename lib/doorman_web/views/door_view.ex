@@ -4,6 +4,7 @@ defmodule DoormanWeb.DoorView do
 
   alias Doorman.Access.{Door, Grant}
   alias Doorman.Access
+  alias Doorman.Accounts
 
   def door_status(%Door{} = door) do
     case Access.door_status(door) do

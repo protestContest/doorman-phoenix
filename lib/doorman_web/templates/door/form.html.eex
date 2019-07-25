@@ -18,9 +18,15 @@
   <%= error_tag f, :forward_number %>
 
   <%= if @current_user.is_admin do %>
-    <%= label f, :user_id %>
-    <%= text_input f, :user_id %>
-    <%= error_tag f, :user_id %>
+    <%= label f, :user_email %>
+    <%= text_input f, :user_email, value: @user_email, list: "user-list" %>
+    <%= error_tag f, :user_email %>
+
+    <datalist id="user-list">
+      <%= for user <- Accounts.list_users() do %>
+        <option value="<%= user.email %>" />
+      <% end %>
+    </datalist>
   <% end %>
 
   <div>

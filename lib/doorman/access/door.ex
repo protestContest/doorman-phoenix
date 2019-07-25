@@ -17,8 +17,7 @@ defmodule Doorman.Access.Door do
 
   def changeset(door, attrs) do
     door
-    |> cast(attrs, [:name, :incoming_number, :forward_number])
+    |> cast(attrs, [:name, :incoming_number, :forward_number, :user_id])
     |> validate_required([:name, :incoming_number, :forward_number])
-    |> cast_assoc(:user, required: true)
   end
 end

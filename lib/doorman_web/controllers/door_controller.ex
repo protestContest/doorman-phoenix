@@ -24,7 +24,7 @@ defmodule DoormanWeb.DoorController do
 
   def new(conn, _params) do
     changeset = Access.change_door(%Door{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: changeset, user_email: "")
   end
 
   def create(
@@ -57,14 +57,15 @@ defmodule DoormanWeb.DoorController do
   def edit(conn, %{"id" => id}) do
     door = Access.get_door!(id)
     changeset = Access.change_door(door)
-    render(conn, "edit.html", door: door, changeset: changeset)
+    render(conn, "edit.html", door: door, changeset: changeset, user_email: door.user.email)
   end
 
   def update(
-      %Plug.Conn{assigns: %{current_user: _current_user}} = conn,
+      %Plug.Conn{assigns: %{current_user: current_user}} = conn,
       %{"id" => id, "door" => door_params}) do
 
     door = Access.get_door!(id)
+    door_params = if current_user.is_admin, do: add_user_id_to_params(door_params), else: Map.delete(door_params, "user_id")
 
     case Access.update_door(door, door_params) do
       {:ok, door} ->
@@ -104,4 +105,15 @@ defmodule DoormanWeb.DoorController do
     conn
     |> redirect(to: Routes.door_path(conn, :index))
   end
+
+  defp add_user_id_to_params(%{"user_email" => user_email} = door_params) do
+    user = Accounts.get_by(%{"email" => user_email})
+    if !is_nil(user) do
+      Map.put(door_params, "user_id", user.id)
+    else
+      door_params
+    end
+  end
+
+  defp add_user_id_to_params(%{} = door_params), do: door_params
 end

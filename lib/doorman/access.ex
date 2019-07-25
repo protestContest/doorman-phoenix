@@ -25,6 +25,7 @@ defmodule Doorman.Access do
   def get_door!(id), do: Repo.get!(Door, id) |> Repo.preload(:user)
 
   def create_user_door(user, attrs) do
+    attrs = Map.delete(attrs, "user_id")
     %Door{user: user}
     |> Door.changeset(attrs)
     |> Repo.insert()
