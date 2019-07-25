@@ -29,6 +29,12 @@
 
 </ul>
 
+<h2>Create Grant</h2>
+<%= render GrantView, "form.html", %{
+  action: Routes.grant_path(@conn, :create),
+  changeset: Access.change_door_grant(@door, %Grant{})
+} %>
+
 <h2>Status History</h2>
 <table>
   <tbody>

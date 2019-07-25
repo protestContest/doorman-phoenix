@@ -89,6 +89,10 @@ defmodule Doorman.Access do
     Grant.changeset(grant, %{})
   end
 
+  def change_door_grant(%Door{} = door, %Grant{} = grant) do
+    Grant.changeset(grant, %{door_id: door.id, timeout: default_grant_timeout()})
+  end
+
   def door_status(%Door{} = door) do
     if grant_expired?(last_grant(door)), do: :closed, else: :open
   end
@@ -143,6 +147,11 @@ defmodule Doorman.Access do
 
   def grant_type(%Grant{} = grant) do
     if grant_duration(grant) == 0, do: :closed, else: :open
+  end
+
+  defp default_grant_timeout do
+    half_hour_seconds = 1800
+    DateTime.add(DateTime.utc_now(), half_hour_seconds)
   end
 end
 
