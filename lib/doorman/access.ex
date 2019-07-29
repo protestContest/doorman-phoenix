@@ -149,6 +149,10 @@ defmodule Doorman.Access do
     if grant_duration(grant) == 0, do: :closed, else: :open
   end
 
+  def get_door_by_number!(incoming_number) do
+    Repo.one!(from d in Door, where: d.incoming_number == ^incoming_number)
+  end
+
   defp default_grant_timeout do
     half_hour_seconds = 1800
     DateTime.add(DateTime.utc_now(), half_hour_seconds)

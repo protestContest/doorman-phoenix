@@ -25,6 +25,8 @@ defmodule DoormanWeb.Router do
 
     post "/doors/:id/open", DoorController, :open
     post "/doors/:id/close", DoorController, :close
+
+    get "/knock", KnockController, :knock
   end
 
 end
