@@ -180,3 +180,10 @@ body, html { margin: 0; padding: 0; }
     margin-left: auto !important;
   }
 }
+
+.status-text {
+  text-transform: uppercase;
+  color: #999;
+  font-size: 0.9em;
+  font-weight: 600;
+}

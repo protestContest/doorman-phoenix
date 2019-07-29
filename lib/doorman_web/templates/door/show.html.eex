@@ -36,7 +36,12 @@
     <tr>
       <td class="label"><%= Access.grant_type(grant) %></td>
       <td><%= format_time(grant.inserted_at, grant.door.timezone, :long) %></td>
-      <td><%= grant_duration(grant) %></td>
+      <td>
+        <%= grant_duration(grant) %>
+        <%= if Access.grant_expired?(grant) and Access.grant_duration(grant) > 0 do %>
+          <span class="status-text">Expired</span>
+        <% end %>
+      </td>
     </tr>
 <% end %>
   </tbody>
