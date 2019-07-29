@@ -140,3 +140,16 @@ body, html { margin: 0; padding: 0; }
     display: initial;
   }
 }
+
+._mobile-hidden {
+  @media (max-width: 640px) {
+    display: none !important;
+  }
+}
+
+._mobile-only {
+  display: none !important;
+  @media (max-width: 640px) {
+    display: initial !important;
+  }
+}
