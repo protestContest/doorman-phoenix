@@ -2,6 +2,7 @@ defmodule DoormanWeb.DoorController do
   use DoormanWeb, :controller
 
   import DoormanWeb.Authorize
+  import DoormanWeb.Helpers
 
   alias Doorman.Access
   alias Doorman.Access.Door
@@ -95,7 +96,7 @@ defmodule DoormanWeb.DoorController do
     Access.open_door(door, @default_timeout)
 
     conn
-    |> redirect(to: Routes.door_path(conn, :index))
+    |> redirect_back(fallback: Routes.door_path(conn, :index))
   end
 
   def close(conn, %{"id" => id}) do
@@ -103,7 +104,7 @@ defmodule DoormanWeb.DoorController do
     Access.close_door(door)
 
     conn
-    |> redirect(to: Routes.door_path(conn, :index))
+    |> redirect_back(fallback: Routes.door_path(conn, :index))
   end
 
   defp add_user_id_to_params(%{"user_email" => user_email} = door_params) do
