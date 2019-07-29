@@ -1,0 +1,20 @@
+<%= form_for @changeset, @action, [class: "mobile-form"], fn f -> %>
+  <%= hidden_input f, :door_id %>
+
+  <div class="flex-row">
+    <%= label f, :duration, "Open door for" %>&nbsp;
+    <span id="duration" class="toggle">60 min</span>
+    <%= submit "Open", class: "flex-row__pull-right" %>
+  </div>
+
+  <%= range_input f, :duration, value: "3600", min: "1800", max: "10800", step: "1800", oninput: "setLabel(this, 'duration')" %>
+
+  <script type="text/javascript">
+    function setLabel(source, id) {
+      var dest = document.getElementById(id);
+      var seconds = source.value;
+      var min = seconds / 60;
+      dest.innerText = min + " min";
+    }
+  </script>
+<% end %>

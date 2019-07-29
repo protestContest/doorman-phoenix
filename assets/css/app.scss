@@ -40,6 +40,7 @@ body, html { margin: 0; padding: 0; }
 .page-header {
   display: flex;
   align-items: baseline;
+  margin-bottom: 2.5rem;
 
   .page-header__title {
     margin-bottom: 0;
@@ -50,6 +51,7 @@ body, html { margin: 0; padding: 0; }
     text-transform: uppercase;
     font-weight: bold;
     color: #666;
+    margin: 0;
   }
 
   .page-header__actions {
@@ -100,8 +102,17 @@ body, html { margin: 0; padding: 0; }
   }
 }
 
+.mobile-form {
+  @extend .inline-form;
+
+  input[type="range"] {
+    width: 100%;
+    margin: 1em 0;
+  }
+}
+
 .small-button {
-  padding: 0.5em;
+  padding: 0.5em 1.5em;
   background: white;
   color: #0060d9;
   border: 1px solid #0060d9;
@@ -115,6 +126,14 @@ body, html { margin: 0; padding: 0; }
     color: #0060d9;
     border: 1px solid #0060d9;
   }
+}
+
+.wide-button {
+  @extend .small-button;
+  display: block;
+  margin: 1em 0;
+  padding: 1em;
+  width: 100%;
 }
 
 .pop-up {
@@ -151,5 +170,13 @@ body, html { margin: 0; padding: 0; }
   display: none !important;
   @media (max-width: 640px) {
     display: initial !important;
+  }
+}
+
+.flex-row {
+  display: flex;
+
+  .flex-row__pull-right {
+    margin-left: auto !important;
   }
 }

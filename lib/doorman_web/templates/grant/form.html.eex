@@ -7,6 +7,8 @@
       <%= range_input f, :duration, value: "3600", min: "1800", max: "10800", step: "1800", oninput: "setLabel(this, 'duration')" %>
     </div>
   </span>
+  <%= submit "Open" %>
+
   <script type="text/javascript">
     function setLabel(source, id) {
       var dest = document.getElementById(id);
@@ -15,6 +17,4 @@
       dest.innerText = min + " min";
     }
   </script>
-
-  <%= submit "Save" %>
 <% end %>
