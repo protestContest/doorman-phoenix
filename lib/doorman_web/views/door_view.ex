@@ -23,19 +23,21 @@ defmodule DoormanWeb.DoorView do
 
   def grant_duration(%Grant{} = grant) do
     seconds = Access.grant_duration(grant)
-    minutes = div seconds, 60
-    hours = div minutes, 60
+    hours = div seconds, 3600
+    minutes = div(rem(seconds, 3600), 60)
 
     cond do
       seconds == 0 -> "-"
       seconds < 3600 -> "#{minutes}min"
+      seconds >= 3600 and minutes == 0 -> "#{hours}hr"
       true -> "#{hours}hr #{minutes}min"
     end
   end
 
-  def format_time(timestamp, tz) do
+  def format_time(timestamp, tz, type \\ :short) do
     localtime = Timezone.convert(timestamp, tz)
-    {:ok, timestr} = Timex.format(localtime, "{h12}:{m} {AM}")
+    formatstr = if type == :short, do: "{h12}:{m} {AM}", else: "{Mshort} {D} {YYYY} {h12}:{m} {AM}"
+    {:ok, timestr} = Timex.format(localtime, formatstr)
     timestr
   end
 end

@@ -35,7 +35,7 @@
 <%= for grant <- @grants do %>
     <tr>
       <td class="label"><%= Access.grant_type(grant) %></td>
-      <td><%= grant_time(grant) %></td>
+      <td><%= format_time(grant.inserted_at, grant.door.timezone, :long) %></td>
       <td><%= grant_duration(grant) %></td>
     </tr>
 <% end %>

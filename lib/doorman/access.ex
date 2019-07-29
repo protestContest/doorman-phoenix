@@ -131,12 +131,12 @@ defmodule Doorman.Access do
   def recent_grants(%Door{} = door) do
     grants = (
       from g in Grant,
-      join: d in Door,
       where: g.door_id == ^door.id,
       order_by: [desc: :inserted_at, desc: :id]
     )
     |> limit(8)
     |> Repo.all
+    |> Repo.preload(:door)
 
     grants
   end

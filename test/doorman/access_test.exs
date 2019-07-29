@@ -110,17 +110,24 @@ defmodule Doorman.AccessTest do
       assert new_grant == Access.last_grant(door)
     end
 
-    test "recent_grants/1 returns the last grants for a door" do
+    test "recent_grants/1 returns the last grants for a door in reverse chrono order" do
       user = user_fixture()
       door = door_fixture(user)
       other_door = door_fixture(user)
       old_grant = grant_fixture(:open, door)
       new_grant = grant_fixture(:open, door)
       other_grant = grant_fixture(:open, other_door)
+
       grant_list = Access.recent_grants(door)
-      assert Enum.member?(grant_list, old_grant)
-      assert Enum.member?(grant_list, new_grant)
-      refute Enum.member?(grant_list, other_grant)
+
+      assert length(grant_list) == 2
+      refute is_nil(Enum.find(grant_list, nil, fn g -> g.id == old_grant.id end))
+      refute is_nil(Enum.find(grant_list, nil, fn g -> g.id == new_grant.id end))
+      assert is_nil(Enum.find(grant_list, nil, fn g -> g.id == other_grant.id end))
+
+      old_index = Enum.find_index(grant_list, fn g -> g.id == old_grant.id end)
+      new_index = Enum.find_index(grant_list, fn g -> g.id == new_grant.id end)
+      assert new_index < old_index
     end
 
     test "grant_duration/1 returns the number of seconds for a grant" do
