@@ -7,7 +7,7 @@ defmodule Doorman.AccessTest do
   describe "doors" do
     alias Doorman.Access.Door
 
-    @valid_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name"}
+    @valid_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name", timezone: "Etc/UTC"}
     @update_attrs %{forward_number: "some updated forward_number", incoming_number: "some updated incoming_number", name: "some updated name"}
     @invalid_attrs %{forward_number: nil, incoming_number: nil, name: nil}
 
