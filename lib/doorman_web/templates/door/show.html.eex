@@ -16,8 +16,8 @@
   </div>
 </header>
 
-<%= if @current_user.is_admin do %>
-  <p class="page-header__subtitle"><%= @door.user.email %></p>
+<%= if @current_user.is_admin and @door.user.id != @current_user.id do %>
+  <p class="page-header__subtitle">Owned by <%= @door.user.email %></p>
 <% end %>
 
 <h2>Status History</h2>

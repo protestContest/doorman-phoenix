@@ -18,7 +18,7 @@
   <%= error_tag f, :forward_number %>
 
   <%= if @current_user.is_admin do %>
-    <%= label f, :user_email %>
+    <%= label f, :user_email, "Owner" %>
     <%= text_input f, :user_email, value: @user_email, list: "user-list" %>
     <%= error_tag f, :user_email %>
 

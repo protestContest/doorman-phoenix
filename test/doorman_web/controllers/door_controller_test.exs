@@ -178,7 +178,7 @@ defmodule DoormanWeb.DoorControllerTest do
 
     test "can see a form to create another user's door", %{conn: conn} do
       conn = get(conn, Routes.door_path(conn, :new))
-      assert html_response(conn, 200) =~ "User"
+      assert html_response(conn, 200) =~ "Owner"
     end
 
     test "can create another user's door", %{conn: conn, other_user: other_user} do
