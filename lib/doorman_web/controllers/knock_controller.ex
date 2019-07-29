@@ -2,10 +2,8 @@ defmodule DoormanWeb.KnockController do
   use DoormanWeb, :controller
 
   alias Doorman.Access
-  alias Doorman.Access.Door
-  alias Doorman.Accounts
 
-  def knock(conn, %{"To" => incoming_num} = params) do
+  def knock(conn, %{"To" => incoming_num}) do
     door = Access.get_door_by_number!(incoming_num)
     if Access.door_status(door) == :open do
       conn |> put_layout(false) |> render("let_in.html")
