@@ -17,6 +17,16 @@
   <%= text_input f, :forward_number %>
   <%= error_tag f, :forward_number %>
 
+  <%= label f, :timezone %>
+  <%= text_input f, :timezone, value: "Etc/UTC", list: "timezone-list" %>
+  <%= error_tag f, :timezone %>
+
+  <datalist id="timezone-list">
+    <%= for tz <- Tzdata.zone_list() do %>
+      <option value="<%= tz %>" />
+    <% end %>
+  </datalist>
+
   <%= if @current_user.is_admin do %>
     <%= label f, :user_email, "Owner" %>
     <%= text_input f, :user_email, value: @user_email, list: "user-list" %>

@@ -29,7 +29,7 @@ defmodule DoormanWeb.GrantController do
     door = Access.get_door!(door_id)
     grant = Access.open_door(door, String.to_integer(duration))
     conn
-    |> put_flash(:info, "Door open until #{DoorView.format_time(grant.timeout)}")
+    |> put_flash(:info, "Door open until #{DoorView.format_time(grant.timeout, door.timezone)}")
     |> redirect(to: Routes.door_path(conn, :show, grant.door_id))
   end
 

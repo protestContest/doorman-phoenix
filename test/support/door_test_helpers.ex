@@ -4,8 +4,8 @@ defmodule DoormanWeb.DoorTestHelpers do
   alias Doorman.Access
   alias Doorman.Accounts
 
-  @create_door_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "User Door"}
-  @create_other_door_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "Other Door"}
+  @create_door_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "User Door", timezone: "Etc/UTC"}
+  @create_other_door_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "Other Door", timezone: "Etc/UTC"}
 
   def add_door(%{user: user}) do
     {:ok, door} = Access.create_user_door(user, @create_door_attrs)
@@ -42,7 +42,7 @@ defmodule DoormanWeb.DoorTestHelpers do
   def door_fixture(%Accounts.User{} = user) do
     {:ok, door} = Access.create_user_door(
       user,
-      %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name"}
+      %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name", timezone: "Etc/UTC"}
     )
 
     door

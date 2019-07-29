@@ -10,31 +10,34 @@ defmodule DoormanWeb.DoorView do
   def door_status(%Door{} = door) do
     case Access.door_status(door) do
       :closed -> "Closed"
-      :open -> "Open until #{format_time(Access.last_grant(door).timeout)}"
+      :open -> "Open until #{format_time(Access.last_grant(door).timeout, door.timezone)}"
     end
   end
 
   def grant_time(%Grant{} = grant) do
-    localtime = Timezone.convert(grant.timeout, Timezone.local())
+    door = Access.get_door!(grant.door_id)
+    localtime = Timezone.convert(grant.timeout, door.timezone)
     {:ok, timestr} = Timex.format(localtime, "{Mshort} {D} {YYYY} {h12}:{m} {AM}")
     timestr
   end
 
   def grant_duration(%Grant{} = grant) do
     seconds = Access.grant_duration(grant)
-    minutes = div seconds, 60
-    hours = div minutes, 60
+    hours = div seconds, 3600
+    minutes = div(rem(seconds, 3600), 60)
 
     cond do
       seconds == 0 -> "-"
       seconds < 3600 -> "#{minutes}min"
+      seconds >= 3600 and minutes == 0 -> "#{hours}hr"
       true -> "#{hours}hr #{minutes}min"
     end
   end
 
-  def format_time(timestamp) do
-    localtime = Timex.Timezone.convert(timestamp, Timex.Timezone.local())
-    {:ok, timestr} = Timex.format(localtime, "{h12}:{m} {AM}")
+  def format_time(timestamp, tz, type \\ :short) do
+    localtime = Timezone.convert(timestamp, tz)
+    formatstr = if type == :short, do: "{h12}:{m} {AM}", else: "{Mshort} {D} {YYYY} {h12}:{m} {AM}"
+    {:ok, timestr} = Timex.format(localtime, formatstr)
     timestr
   end
 end
