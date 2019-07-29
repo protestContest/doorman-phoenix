@@ -54,6 +54,12 @@ body, html { margin: 0; padding: 0; }
 
   .page-header__actions {
     margin-left: auto;
+    display: flex;
+  }
+
+  .page-header__actions > * {
+    margin-right: 1em;
+    &:last-child { margin-right: 0; }
   }
 
   .page-header__back-link {
@@ -73,4 +79,64 @@ body, html { margin: 0; padding: 0; }
   text-transform: uppercase;
   font-size: 0.9em;
   color: rgba(0, 0, 0, 0.8);
+}
+
+.inline-form {
+  label, input {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+  }
+
+  .toggle {
+    border-bottom: 1px dashed black;
+    cursor: pointer;
+  }
+
+  input[type="submit"],
+  button[type="submit"] {
+    @extend .small-button;
+  }
+}
+
+.small-button {
+  padding: 0.5em;
+  background: white;
+  color: #0060d9;
+  border: 1px solid #0060d9;
+  margin: 0;
+  margin-left: 0.5em;
+  line-height: normal;
+  height: auto;
+
+  &:hover {
+    background: #f5faff;
+    color: #0060d9;
+    border: 1px solid #0060d9;
+  }
+}
+
+.pop-up {
+  position: absolute;
+  background: white;
+  z-index: 1;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 0.5em;
+  top: calc(100% + 10px);
+  left: -50px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+._relative {
+  position: relative;
+}
+
+._showable {
+  display: none;
+
+  &._active {
+    display: initial;
+  }
 }

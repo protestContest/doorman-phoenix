@@ -1,39 +1,24 @@
 <header class="page-header">
   <div class="page-header__title-group">
     <h1 class="page-header__title"><%= @door.name %></h1>
-    <p class="page-header__subtitle"><%= Access.door_status(@door) %></p>
+    <p class="page-header__subtitle"><%= door_status(@door) %></p>
   </div>
   <div class="page-header__actions">
+    <%= if Access.door_status(@door) == :closed do %>
+      <%= render GrantView, "form.html", %{
+        action: Routes.grant_path(@conn, :create),
+        changeset: Access.change_door_grant(@door, %Grant{})
+      } %>
+    <% else %>
+      <%= button "Close door", class: "small-button", to: Routes.door_path(@conn, :close, @door.id) %>
+    <% end %>
     <%= link "Edit", to: Routes.door_path(@conn, :edit, @door) %>
   </div>
 </header>
 
-<ul>
-
-  <%= if @current_user.is_admin do %>
-  <li>
-    <strong>Owner:</strong>
-    <%= @door.user.email %>
-  </li>
-  <% end %>
-
-  <li>
-    <strong>Incoming number:</strong>
-    <%= @door.incoming_number %>
-  </li>
-
-  <li>
-    <strong>Forward number:</strong>
-    <%= @door.forward_number %>
-  </li>
-
-</ul>
-
-<h2>Create Grant</h2>
-<%= render GrantView, "form.html", %{
-  action: Routes.grant_path(@conn, :create),
-  changeset: Access.change_door_grant(@door, %Grant{})
-} %>
+<%= if @current_user.is_admin do %>
+  <p class="page-header__subtitle"><%= @door.user.email %></p>
+<% end %>
 
 <h2>Status History</h2>
 <table>

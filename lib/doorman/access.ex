@@ -135,7 +135,7 @@ defmodule Doorman.Access do
       where: g.door_id == ^door.id,
       order_by: [desc: :inserted_at, desc: :id]
     )
-    |> limit(30)
+    |> limit(8)
     |> Repo.all
 
     grants

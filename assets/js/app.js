@@ -15,3 +15,13 @@ import "phoenix_html"
 //
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggles = document.querySelectorAll("[data-js-toggle]");
+  toggles.forEach(toggle => {
+    const target = document.querySelector(toggle.dataset.jsToggle);
+    toggle.addEventListener("click", () => {
+      target.classList.toggle("_active");
+    });
+  })
+});

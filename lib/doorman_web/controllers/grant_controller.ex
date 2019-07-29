@@ -25,7 +25,7 @@ defmodule DoormanWeb.GrantController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"grant" => %{"door_id" => door_id, "duration" => duration} = grant_params}) do
+  def create(conn, %{"grant" => %{"door_id" => door_id, "duration" => duration}}) do
     door = Access.get_door!(door_id)
     grant = Access.open_door(door, String.to_integer(duration))
     conn

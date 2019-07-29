@@ -106,10 +106,6 @@ defmodule DoormanWeb.DoorController do
     |> redirect(to: Routes.door_path(conn, :index))
   end
 
-  def status(conn, %{"id" => id}) do
-
-  end
-
   defp add_user_id_to_params(%{"user_email" => user_email} = door_params) do
     user = Accounts.get_by(%{"email" => user_email})
     if !is_nil(user) do
