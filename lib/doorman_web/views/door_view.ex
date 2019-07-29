@@ -10,12 +10,13 @@ defmodule DoormanWeb.DoorView do
   def door_status(%Door{} = door) do
     case Access.door_status(door) do
       :closed -> "Closed"
-      :open -> "Open until #{format_time(Access.last_grant(door).timeout)}"
+      :open -> "Open until #{format_time(Access.last_grant(door).timeout, door.timezone)}"
     end
   end
 
   def grant_time(%Grant{} = grant) do
-    localtime = Timezone.convert(grant.timeout, Timezone.local())
+    door = Access.get_door!(grant.door_id)
+    localtime = Timezone.convert(grant.timeout, door.timezone)
     {:ok, timestr} = Timex.format(localtime, "{Mshort} {D} {YYYY} {h12}:{m} {AM}")
     timestr
   end
@@ -32,8 +33,8 @@ defmodule DoormanWeb.DoorView do
     end
   end
 
-  def format_time(timestamp) do
-    localtime = Timex.Timezone.convert(timestamp, Timex.Timezone.local())
+  def format_time(timestamp, tz) do
+    localtime = Timezone.convert(timestamp, tz)
     {:ok, timestr} = Timex.format(localtime, "{h12}:{m} {AM}")
     timestr
   end
