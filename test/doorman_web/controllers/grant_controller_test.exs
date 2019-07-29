@@ -4,7 +4,7 @@ defmodule DoormanWeb.GrantControllerTest do
   import DoormanWeb.AuthTestHelpers
   import DoormanWeb.DoorTestHelpers
 
-  @create_attrs %{timeout: ~N[2010-04-17 14:00:00]}
+  @create_attrs %{duration: "1800"}
   # @update_attrs %{timeout: ~N[2011-05-18 15:01:01]}
   # @invalid_attrs %{timeout: nil}
 
