@@ -3,11 +3,11 @@
 
   <div class="flex-row">
     <%= label f, :duration, "Open door for" %>&nbsp;
-    <span id="duration" class="toggle">60 min</span>
+    <span id="mobile-duration" class="toggle">60 min</span>
     <%= submit "Open", class: "flex-row__pull-right" %>
   </div>
 
-  <%= range_input f, :duration, value: "3600", min: "1800", max: "10800", step: "1800", oninput: "setLabel(this, 'duration')" %>
+  <%= range_input f, :duration, value: "3600", min: "1800", max: "10800", step: "1800", oninput: "setLabel(this, 'mobile-duration')" %>
 
   <script type="text/javascript">
     function setLabel(source, id) {
