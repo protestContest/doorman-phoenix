@@ -40,4 +40,19 @@ defmodule DoormanWeb.DoorView do
     {:ok, timestr} = Timex.format(localtime, formatstr)
     timestr
   end
+
+  def one_day_ago_label(tz) do
+    day_ago = DateTime.add(DateTime.utc_now(), -24*3600)
+    localtime = Timezone.convert(day_ago, tz)
+    formatstr = "{M}/{D} {h12}:{m} {AM}"
+    {:ok, timestr} = Timex.format(localtime, formatstr)
+    timestr
+  end
+
+  def now_label(tz) do
+    localtime = Timezone.convert(DateTime.utc_now(), tz)
+    formatstr = "{M}/{D} {h12}:{m} {AM}"
+    {:ok, timestr} = Timex.format(localtime, formatstr)
+    timestr
+  end
 end
