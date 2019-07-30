@@ -30,6 +30,82 @@
 </section>
 
 <h2>Status History</h2>
+
+<canvas id="status-map" class="status-map" width="1000" height="100"></canvas>
+<script type="text/javascript">
+  const grants = [
+    <%= for grant <- @grants do %>
+      {
+        id: <%= grant.id %>,
+        created: new Date("<%= grant.inserted_at %>"),
+        timeout: new Date("<%= grant.timeout %>")
+      },
+    <% end %>
+  ];
+  console.log(grants);
+
+  const begin_ts = grants[grants.length-1].created.getTime();
+  const end_ts = grants[0].timeout.getTime();
+
+  const canvas = document.querySelector("#status-map");
+
+  const rects = grants.reduce((rects, grant, gi) => {
+    let x1, x2, x3;
+
+    if (gi === 0) {
+      // most recent grant
+      x1 = map(grant.created.getTime(), begin_ts, end_ts, 0, canvas.width);
+      x3 = map(grant.timeout.getTime(), begin_ts, end_ts, 0, canvas.width);
+    } else {
+      const nextRect = rects[rects.length-1];
+
+      x1 = map(grant.created.getTime(), begin_ts, end_ts, 0, canvas.width);
+      x2 = map(grant.timeout.getTime(), begin_ts, end_ts, 0, canvas.width);
+      x3 = Math.min(x2, nextRect.x);
+    }
+
+    const r = {
+      x: x1,
+      y: 0,
+      w: Math.max(x3 - x1, 1),
+      h: 100
+    };
+
+    return [...rects, r];
+  }, []);
+
+  const ctx = canvas.getContext('2d');
+  const openFill = "rgba(0, 255, 0, 0.2)";
+  const openStroke = "rgba(0, 255, 0, 1)";
+  const closeStroke = "rgba(255, 0, 0, 1)";
+  ctx.fillStyle = openFill;
+
+  rects.forEach(r => {
+    if (r.w === 1) {
+      // close type
+      ctx.fillStyle = closeStroke;
+      ctx.fillRect(r.x, r.y, 2, r.h);
+    } else {
+      ctx.fillStyle = openFill;
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.fillStyle = openStroke;
+      ctx.fillRect(r.x, r.y, 2, r.h);
+    }
+  });
+
+  function norm(n, v0, v1) {
+    return (n - v0) / (v1 - v0);
+  }
+
+  function lerp(n, v0, v1) {
+    return v0 + n * (v1 - v0);
+  }
+
+  function map(n, a, b, c, d) {
+    return lerp(norm(n, a, b), c, d);
+  }
+</script>
+
 <table>
   <tbody>
 <%= for grant <- @grants do %>
@@ -46,5 +122,3 @@
 <% end %>
   </tbody>
 </table>
-
-<span></span>
