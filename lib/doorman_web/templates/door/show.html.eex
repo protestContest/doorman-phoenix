@@ -71,7 +71,7 @@
       const r = {
         x: x1,
         y: 0,
-        w: Math.max(x3 - x1, 1),
+        w: x3 - x1,
         h: 100
       };
 
@@ -85,16 +85,10 @@
     ctx.fillStyle = openFill;
 
     rects.forEach(r => {
-      if (r.w === 1) {
-        // close type
-        ctx.fillStyle = closeStroke;
-        ctx.fillRect(r.x, r.y, 2, r.h);
-      } else {
-        ctx.fillStyle = openFill;
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillStyle = openStroke;
-        ctx.fillRect(r.x, r.y, 2, r.h);
-      }
+      ctx.fillStyle = openFill;
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.fillStyle = openStroke;
+      ctx.fillRect(r.x, r.y, 2, r.h);
     });
 
     function norm(n, v0, v1) {
