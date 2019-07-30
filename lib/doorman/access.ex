@@ -129,12 +129,13 @@ defmodule Doorman.Access do
   def close_door(%Door{} = door), do: open_door(door, 0)
 
   def recent_grants(%Door{} = door) do
+    day_ago = DateTime.add(DateTime.utc_now(), -24*3600)
     grants = (
       from g in Grant,
-      where: g.door_id == ^door.id,
+      where: g.door_id == ^door.id
+        and g.inserted_at > ^day_ago,
       order_by: [desc: :inserted_at, desc: :id]
     )
-    |> limit(8)
     |> Repo.all
     |> Repo.preload(:door)
 

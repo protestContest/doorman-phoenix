@@ -5,6 +5,7 @@
     <span id="duration" class="toggle">60 min</span>
     <div id="duration-slider" class="pop-up _showable">
       <%= range_input f, :duration, value: "3600", min: "1800", max: "10800", step: "1800", oninput: "setLabel(this, 'duration')" %>
+      <%= label f, :duration, class: "label" %>
     </div>
   </span>
   <%= submit "Open" %>
