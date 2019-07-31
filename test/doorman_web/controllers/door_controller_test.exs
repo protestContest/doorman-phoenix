@@ -67,15 +67,24 @@ defmodule DoormanWeb.DoorControllerTest do
   describe "normal users" do
     setup [:add_user_session, :add_door, :add_other_user, :add_other_door]
 
-    test "cannot list another user's doors", %{conn: conn, other_door: other_door} do
+    test "cannot list another user's doors", %{conn: conn, user: user, other_door: other_door} do
+      extra_door = door_fixture(user)
       conn = get(conn, Routes.door_path(conn, :index))
       response = html_response(conn, 200)
+      assert response =~ extra_door.name
       refute response =~ other_door.name
     end
 
-    test "can list their own doors", %{conn: conn} do
+    test "can list their own doors", %{conn: conn, user: user, door: door} do
+      extra_door = door_fixture(user)
       conn = get(conn, Routes.door_path(conn, :index))
-      assert html_response(conn, 200)
+      assert html_response(conn, 200) =~ door.name
+      assert html_response(conn, 200) =~ extra_door.name
+    end
+
+    test "are redirected to the door detail page if only one door exists", %{conn: conn, door: door} do
+      conn = get(conn, Routes.door_path(conn, :index))
+      assert redirected_to(conn) == Routes.door_path(conn, :show, door)
     end
 
     test "can see a form to create their own door", %{conn: conn} do
@@ -171,9 +180,10 @@ defmodule DoormanWeb.DoorControllerTest do
   describe "admins" do
     setup [:add_admin_session, :add_other_user, :add_other_door]
 
-    test "can list another user's doors", %{conn: conn} do
+    test "can list another user's doors", %{conn: conn, other_user: other_user} do
+      extra_door = door_fixture(other_user)
       conn = get(conn, Routes.door_path(conn, :index))
-      assert html_response(conn, 200)
+      assert html_response(conn, 200) =~ extra_door.name
     end
 
     test "can see a form to create another user's door", %{conn: conn} do
