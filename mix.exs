@@ -46,7 +46,8 @@ defmodule Doorman.MixProject do
       {:argon2_elixir, "~> 2.0"},
       {:bamboo, "~> 1.1"},
       {:plug_cowboy, "~> 2.0"},
-      {:timex, "~> 3.6.1"}
+      {:timex, "~> 3.6.1"},
+      {:ex_twilio, "~> 0.7.0"}
     ]
   end
 

@@ -130,6 +130,7 @@ defmodule Doorman.Access do
 
   def recent_grants(%Door{} = door) do
     day_ago = DateTime.add(DateTime.utc_now(), -24*3600)
+
     grants = (
       from g in Grant,
       where: g.door_id == ^door.id
