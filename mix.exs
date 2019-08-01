@@ -47,7 +47,8 @@ defmodule Doorman.MixProject do
       {:bamboo, "~> 1.1"},
       {:plug_cowboy, "~> 2.0"},
       {:timex, "~> 3.6.1"},
-      {:ex_twilio, "~> 0.7.0"}
+      {:ex_twilio, "~> 0.7.0"},
+      {:httpoison, "~> 1.5.1"}
     ]
   end
 

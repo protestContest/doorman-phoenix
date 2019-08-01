@@ -7,9 +7,10 @@ defmodule Doorman.Access.Door do
   alias Tzdata
 
   schema "doors" do
+    field :name, :string
     field :forward_number, :string
     field :incoming_number, :string
-    field :name, :string
+    field :incoming_number_sid, :string
     field :timezone, :string
     belongs_to :user, User
     has_many :grants, Grant
