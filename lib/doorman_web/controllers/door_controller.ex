@@ -20,7 +20,11 @@ defmodule DoormanWeb.DoorController do
       Access.list_doors(current_user)
     end
 
-    render(conn, "index.html", doors: doors, user: current_user)
+    if length(doors) == 1 do
+      redirect(conn, to: Routes.door_path(conn, :show, hd(doors)))
+    else
+      render(conn, "index.html", doors: doors, user: current_user)
+    end
   end
 
   def new(conn, _params) do
