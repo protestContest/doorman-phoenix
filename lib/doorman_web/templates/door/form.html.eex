@@ -5,11 +5,11 @@
     </div>
   <% end %>
 
-  <%= label f, :name %>
+  <%= label f, :name, "Door name" %>
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :forward_number, "Phone number" %>
+  <%= label f, :forward_number, "Your phone number" %>
   <%= text_input f, :forward_number %>
   <%= error_tag f, :forward_number %>
 
