@@ -1,4 +1,6 @@
-<h1>New Door</h1>
+<h1>Link a Door</h1>
+
+<h2>Step 1: Add Door Info</h2>
 
 <%= render "form.html", Map.put(assigns, :action, Routes.door_path(@conn, :create)) %>
 

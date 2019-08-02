@@ -36,6 +36,6 @@
   <% end %>
 
   <div>
-    <%= submit "Save" %>
+    <%= submit "Next" %>
   </div>
 <% end %>

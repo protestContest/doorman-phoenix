@@ -1,8 +1,6 @@
 defmodule DoormanWeb.PasswordResetController do
   use DoormanWeb, :controller
 
-  import DoormanWeb.Helpers
-
   alias Phauxth.Confirm.PassReset
   alias Doorman.Accounts
   alias DoormanWeb.{Auth.Token, Email}

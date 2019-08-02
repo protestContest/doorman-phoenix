@@ -4,7 +4,7 @@ defmodule DoormanWeb.SessionController do
   import DoormanWeb.Authorize
   import DoormanWeb.Helpers
 
-  alias Doorman.{Sessions, Sessions.Session, Access}
+  alias Doorman.{Sessions, Sessions.Session}
   alias DoormanWeb.Auth.Login
 
   plug :guest_check when action in [:new, :create]
