@@ -2,6 +2,7 @@ defmodule DoormanWeb.SessionController do
   use DoormanWeb, :controller
 
   import DoormanWeb.Authorize
+  import DoormanWeb.Helpers
 
   alias Doorman.{Sessions, Sessions.Session, Access}
   alias DoormanWeb.Auth.Login
@@ -50,11 +51,4 @@ defmodule DoormanWeb.SessionController do
     |> configure_session(renew: true)
   end
 
-  defp user_dashboard(conn, user) do
-    doors = Access.list_doors(user)
-    case length(doors) do
-      1 -> Routes.door_path(conn, :show, hd(doors))
-      _ -> Routes.door_path(conn, :index)
-    end
-  end
 end

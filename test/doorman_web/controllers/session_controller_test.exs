@@ -29,6 +29,13 @@ defmodule DoormanWeb.SessionControllerTest do
   describe "create session" do
     test "login succeeds", %{conn: conn} do
       conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
+      refute redirected_to(conn) == Routes.session_path(conn, :new)
+    end
+
+    test "users are redirected to the door list page if multiple doors exist", %{conn: conn, user: user} do
+      _door1 = door_fixture(user)
+      _door2 = door_fixture(user)
+      conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
       assert redirected_to(conn) == Routes.door_path(conn, :index)
     end
 
@@ -36,6 +43,11 @@ defmodule DoormanWeb.SessionControllerTest do
       door = door_fixture(user)
       conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
       assert redirected_to(conn) == Routes.door_path(conn, :show, door)
+    end
+
+    test "users are redirected to the new door page on login if no doors exist", %{conn: conn} do
+      conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
+      assert redirected_to(conn) == Routes.door_path(conn, :new)
     end
 
     test "login fails for user that is not yet confirmed", %{conn: conn} do
