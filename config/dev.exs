@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :doorman, twilio_area_code: "500"
+
 # Configure your database
 config :doorman, Doorman.Repo,
   username: "postgres",

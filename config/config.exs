@@ -9,7 +9,8 @@ use Mix.Config
 
 config :doorman,
   ecto_repos: [Doorman.Repo],
-  twilio_client: Doorman.TwilioClient
+  twilio_client: Doorman.TwilioClient,
+  twilio_area_code: "206"
 
 # Configures the endpoint
 config :doorman, DoormanWeb.Endpoint,
