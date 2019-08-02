@@ -34,7 +34,7 @@ defmodule Doorman.Access do
   end
 
   def create_twilio_number(changeset, attrs) do
-    number = Twilio.create_number(attrs[:name])
+    number = Twilio.create_number(attrs["name"])
     changeset
     |> Ecto.Changeset.put_change(:incoming_number, number["phone_number"])
     |> Ecto.Changeset.put_change(:incoming_number_sid, number["sid"])
