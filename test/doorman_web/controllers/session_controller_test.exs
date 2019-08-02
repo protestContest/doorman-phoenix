@@ -2,6 +2,7 @@ defmodule DoormanWeb.SessionControllerTest do
   use DoormanWeb.ConnCase
 
   import DoormanWeb.AuthTestHelpers
+  import DoormanWeb.DoorTestHelpers
 
   @create_attrs %{email: "robin@example.com", password: "reallyHard2gue$$"}
   @invalid_attrs %{email: "robin@example.com", password: "cannotGue$$it"}
@@ -29,6 +30,12 @@ defmodule DoormanWeb.SessionControllerTest do
     test "login succeeds", %{conn: conn} do
       conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
       assert redirected_to(conn) == Routes.door_path(conn, :index)
+    end
+
+    test "users are redirected to the door detail page on login if only one door exists", %{conn: conn, user: user} do
+      door = door_fixture(user)
+      conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
+      assert redirected_to(conn) == Routes.door_path(conn, :show, door)
     end
 
     test "login fails for user that is not yet confirmed", %{conn: conn} do

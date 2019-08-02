@@ -3,7 +3,7 @@ defmodule DoormanWeb.SessionController do
 
   import DoormanWeb.Authorize
 
-  alias Doorman.{Sessions, Sessions.Session}
+  alias Doorman.{Sessions, Sessions.Session, Access}
   alias DoormanWeb.Auth.Login
 
   plug :guest_check when action in [:new, :create]
@@ -17,7 +17,7 @@ defmodule DoormanWeb.SessionController do
       {:ok, user} ->
         conn
         |> add_session(user, params)
-        |> redirect(to: get_session(conn, :request_path) || Routes.door_path(conn, :index))
+        |> redirect(to: get_session(conn, :request_path) || user_dashboard(conn, user))
 
       {:error, message} ->
         conn
@@ -48,5 +48,13 @@ defmodule DoormanWeb.SessionController do
     |> delete_session(:request_path)
     |> put_session(:phauxth_session_id, session_id)
     |> configure_session(renew: true)
+  end
+
+  defp user_dashboard(conn, user) do
+    doors = Access.list_doors(user)
+    case length(doors) do
+      1 -> Routes.door_path(conn, :show, hd(doors))
+      _ -> Routes.door_path(conn, :index)
+    end
   end
 end
