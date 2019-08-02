@@ -7,10 +7,6 @@ defmodule Doorman.AccessTest do
   describe "doors" do
     alias Doorman.Access.Door
 
-    @valid_attrs %{forward_number: "some forward_number", incoming_number: "some incoming_number", name: "some name", timezone: "Etc/UTC"}
-    @update_attrs %{forward_number: "some updated forward_number", incoming_number: "some updated incoming_number", name: "some updated name"}
-    @invalid_attrs %{forward_number: nil, incoming_number: nil, name: nil}
-
     test "list_doors/0 returns all doors" do
       door = door_fixture()
       assert Access.list_doors() == [door]
@@ -23,28 +19,28 @@ defmodule Doorman.AccessTest do
 
     test "create_user_door/2 with valid data creates a door" do
       user = user_fixture()
-      assert {:ok, %Door{} = door} = Access.create_user_door(user, @valid_attrs)
-      assert door.forward_number == "some forward_number"
-      assert door.incoming_number == "some incoming_number"
-      assert door.name == "some name"
+      attrs = door_attrs()
+      assert {:ok, %Door{} = door} = Access.create_user_door(user, attrs)
+      assert door.forward_number == attrs.forward_number
+      assert door.name == attrs.name
     end
 
     test "create_user_door/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Access.create_user_door(user, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Access.create_user_door(user, door_attrs(:invalid))
     end
 
     test "update_door/2 with valid data updates the door" do
       door = door_fixture()
-      assert {:ok, %Door{} = door} = Access.update_door(door, @update_attrs)
-      assert door.forward_number == "some updated forward_number"
-      assert door.incoming_number == "some updated incoming_number"
-      assert door.name == "some updated name"
+      update_attrs = %{forward_number: "new number", name: "new name"}
+      assert {:ok, %Door{} = door} = Access.update_door(door, update_attrs)
+      assert door.forward_number == "new number"
+      assert door.name == "new name"
     end
 
     test "update_door/2 with invalid data returns error changeset" do
       door = door_fixture()
-      assert {:error, %Ecto.Changeset{}} = Access.update_door(door, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Access.update_door(door, door_attrs(:invalid))
       assert door == Access.get_door!(door.id)
     end
 
@@ -63,9 +59,6 @@ defmodule Doorman.AccessTest do
   describe "grants" do
     alias Doorman.Access.Grant
 
-    @valid_attrs %{timeout: ~U[2010-04-17 14:00:00Z]}
-    @invalid_attrs %{timeout: nil}
-
     test "list_grants/0 returns all grants" do
       grant = grant_fixture(:open, door_fixture())
       assert Access.list_grants() == [grant]
@@ -77,14 +70,13 @@ defmodule Doorman.AccessTest do
     end
 
     test "create_grant/1 with valid data creates a grant" do
-      door = door_fixture()
-      attrs = Enum.into(@valid_attrs, %{door_id: door.id})
+      attrs = grant_attrs(:open, door_fixture())
       assert {:ok, %Grant{} = grant} = Access.create_grant(attrs)
-      assert grant.timeout == ~U[2010-04-17 14:00:00Z]
+      assert grant.timeout == attrs.timeout
     end
 
     test "create_grant/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Access.create_grant(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Access.create_grant(%{timeout: nil})
     end
 
     test "change_grant/1 returns a grant changeset" do

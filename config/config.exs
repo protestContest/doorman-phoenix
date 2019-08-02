@@ -8,7 +8,8 @@
 use Mix.Config
 
 config :doorman,
-  ecto_repos: [Doorman.Repo]
+  ecto_repos: [Doorman.Repo],
+  twilio_client: Doorman.TwilioClient
 
 # Configures the endpoint
 config :doorman, DoormanWeb.Endpoint,
