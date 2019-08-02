@@ -1,4 +1,4 @@
-defmodule Doorman.Twilio do
+defmodule Doorman.TwilioClient do
 
   def create_number(name) do
     account_sid = Application.get_env(:ex_twilio, :account_sid)

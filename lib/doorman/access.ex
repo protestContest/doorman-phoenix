@@ -5,7 +5,7 @@ defmodule Doorman.Access do
   alias Doorman.Access.Door
   alias Doorman.Accounts.User
   alias Doorman.Access.Grant
-  alias Doorman.Twilio
+  alias Doorman.TwilioClient
 
   def list_doors do
     Repo.all(Door)
@@ -34,7 +34,7 @@ defmodule Doorman.Access do
   end
 
   def create_twilio_number(changeset, attrs) do
-    number = Twilio.create_number(attrs["name"])
+    number = TwilioClient.create_number(attrs["name"])
     changeset
     |> Ecto.Changeset.put_change(:incoming_number, number["phone_number"])
     |> Ecto.Changeset.put_change(:incoming_number_sid, number["sid"])
