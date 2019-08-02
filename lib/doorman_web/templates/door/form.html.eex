@@ -9,11 +9,7 @@
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :incoming_number %>
-  <%= text_input f, :incoming_number %>
-  <%= error_tag f, :incoming_number %>
-
-  <%= label f, :forward_number %>
+  <%= label f, :forward_number, "Phone number" %>
   <%= text_input f, :forward_number %>
   <%= error_tag f, :forward_number %>
 
