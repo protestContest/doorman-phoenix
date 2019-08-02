@@ -20,9 +20,15 @@ defmodule Doorman.Access.Door do
 
   def changeset(door, attrs) do
     door
-    |> cast(attrs, [:name, :incoming_number, :forward_number, :timezone, :user_id])
-    |> validate_required([:name, :incoming_number, :forward_number, :timezone])
+    |> cast(attrs, [:name, :forward_number, :timezone, :user_id])
+    |> validate_required([:name, :forward_number, :timezone])
     |> validate_timezone(:timezone)
+  end
+
+  def add_incoming_number(changeset, %{"phone_number" => number, "sid" => sid}) do
+    changeset
+    |> put_change(:incoming_number, number)
+    |> put_change(:incoming_number_sid, sid)
   end
 
   defp validate_timezone(changeset, field) do

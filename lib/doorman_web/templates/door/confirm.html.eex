@@ -1,0 +1,9 @@
+<h1>Link a Door</h1>
+
+<h2>Step 2: Add Your Door's Number to Your Intercom</h2>
+
+<p class="big-text">Your Door's Number: <code><%= @door.incoming_number %></code></p>
+
+<p>To function correctly, you'll need to add your door's phone number to your intercom system. Typically, you need to ask your landlord to do this.</p>
+
+<%= link "Email Landlord", to: landlord_email_url(@door) %>

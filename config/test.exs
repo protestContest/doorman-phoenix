@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :doorman, twilio_client: Doorman.TwilioClient.Mock
+
 # Configure your database
 config :doorman, Doorman.Repo,
   username: "postgres",

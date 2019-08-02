@@ -2,6 +2,7 @@ defmodule DoormanWeb.SessionController do
   use DoormanWeb, :controller
 
   import DoormanWeb.Authorize
+  import DoormanWeb.Helpers
 
   alias Doorman.{Sessions, Sessions.Session}
   alias DoormanWeb.Auth.Login
@@ -17,7 +18,7 @@ defmodule DoormanWeb.SessionController do
       {:ok, user} ->
         conn
         |> add_session(user, params)
-        |> redirect(to: get_session(conn, :request_path) || Routes.door_path(conn, :index))
+        |> redirect(to: get_session(conn, :request_path) || user_dashboard(conn, user))
 
       {:error, message} ->
         conn
@@ -49,4 +50,5 @@ defmodule DoormanWeb.SessionController do
     |> put_session(:phauxth_session_id, session_id)
     |> configure_session(renew: true)
   end
+
 end

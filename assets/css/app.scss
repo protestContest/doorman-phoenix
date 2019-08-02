@@ -209,3 +209,16 @@ body, html { margin: 0; padding: 0; }
     font-weight: 500;
   }
 }
+
+.big-text {
+  font-size: 1.5em;
+
+  code {
+    font-size: inherit;
+  }
+}
+
+.info-text {
+  font-size: 0.8em;
+  color: #666;
+}

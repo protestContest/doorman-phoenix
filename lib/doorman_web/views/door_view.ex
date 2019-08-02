@@ -55,4 +55,16 @@ defmodule DoormanWeb.DoorView do
     {:ok, timestr} = Timex.format(localtime, formatstr)
     timestr
   end
+
+  def landlord_email_url(door) do
+    subject = "Update Intercom Phone Number"
+    body = URI.encode("""
+Hello!
+
+Would you please update my phone number in the building intercom to #{door.incoming_number}?
+
+Thanks!
+""")
+    "mailto:?body=#{body}&subject=#{subject}"
+  end
 end

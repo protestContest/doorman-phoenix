@@ -27,9 +27,14 @@ defmodule DoormanWeb.DoorController do
     end
   end
 
-  def new(conn, _params) do
+  def new(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
     changeset = Access.change_door(%Door{})
-    render(conn, "new.html", changeset: changeset, user_email: "")
+    render(conn, "new.html", changeset: changeset, user_email: current_user.email)
+  end
+
+  def confirm(conn, %{"id" => id}) do
+    door = Access.get_door!(id)
+    render(conn, "confirm.html", door: door)
   end
 
   def create(
@@ -46,10 +51,10 @@ defmodule DoormanWeb.DoorController do
       {:ok, door} ->
         conn
         |> put_flash(:info, "Door created successfully.")
-        |> redirect(to: Routes.door_path(conn, :show, door))
+        |> redirect(to: Routes.door_path(conn, :confirm, door))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, user_email: user.email)
     end
   end
 

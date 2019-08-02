@@ -5,15 +5,11 @@
     </div>
   <% end %>
 
-  <%= label f, :name %>
+  <%= label f, :name, "Door name" %>
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :incoming_number %>
-  <%= text_input f, :incoming_number %>
-  <%= error_tag f, :incoming_number %>
-
-  <%= label f, :forward_number %>
+  <%= label f, :forward_number, "Your phone number" %>
   <%= text_input f, :forward_number %>
   <%= error_tag f, :forward_number %>
 
@@ -40,6 +36,6 @@
   <% end %>
 
   <div>
-    <%= submit "Save" %>
+    <%= submit "Next" %>
   </div>
 <% end %>

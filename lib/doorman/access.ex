@@ -5,7 +5,8 @@ defmodule Doorman.Access do
   alias Doorman.Access.Door
   alias Doorman.Accounts.User
   alias Doorman.Access.Grant
-  alias Doorman.Twilio
+
+  @twilio_client Application.fetch_env!(:doorman, :twilio_client)
 
   def list_doors do
     Repo.all(Door)
@@ -27,17 +28,12 @@ defmodule Doorman.Access do
 
   def create_user_door(user, attrs) do
     attrs = Map.delete(attrs, "user_id")
+    incoming_number = @twilio_client.create_number(attrs["name"])
+
     %Door{user: user}
     |> Door.changeset(attrs)
-    |> create_twilio_number(attrs)
+    |> Door.add_incoming_number(incoming_number)
     |> Repo.insert()
-  end
-
-  def create_twilio_number(changeset, attrs) do
-    number = Twilio.create_number(attrs[:name])
-    changeset
-    |> Ecto.Changeset.put_change(:incoming_number, number["phone_number"])
-    |> Ecto.Changeset.put_change(:incoming_number_sid, number["sid"])
   end
 
   def update_door(%Door{} = door, attrs) do

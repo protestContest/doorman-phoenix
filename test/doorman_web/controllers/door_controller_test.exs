@@ -82,14 +82,9 @@ defmodule DoormanWeb.DoorControllerTest do
       assert html_response(conn, 200) =~ extra_door.name
     end
 
-    test "are redirected to the door detail page if only one door exists", %{conn: conn, door: door} do
-      conn = get(conn, Routes.door_path(conn, :index))
-      assert redirected_to(conn) == Routes.door_path(conn, :show, door)
-    end
-
     test "can see a form to create their own door", %{conn: conn} do
       conn = get(conn, Routes.door_path(conn, :new))
-      assert html_response(conn, 200) =~ "New Door"
+      assert html_response(conn, 200) =~ "Link a Door"
     end
 
     test "cannot create another user's door", %{conn: conn, other_user: other_user} do
@@ -103,7 +98,7 @@ defmodule DoormanWeb.DoorControllerTest do
     test "can create their own door", %{conn: conn} do
       conn = post(conn, Routes.door_path(conn, :create), door: @create_attrs)
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.door_path(conn, :show, id)
+      assert redirected_to(conn) == Routes.door_path(conn, :confirm, id)
     end
 
     test "sees form errors when creating a door with invalid data", %{conn: conn} do

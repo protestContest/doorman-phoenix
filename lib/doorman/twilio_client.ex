@@ -1,4 +1,4 @@
-defmodule Doorman.Twilio do
+defmodule Doorman.TwilioClient do
 
   def create_number(name) do
     account_sid = Application.get_env(:ex_twilio, :account_sid)
@@ -7,7 +7,8 @@ defmodule Doorman.Twilio do
     headers = [{"Authorization", "Basic #{auth_digest}"}, {"Content-Type", "application/x-www-form-urlencoded; charset=utf-8"}]
 
     callback = "https://doorman.zjm.me/knock"
-    body = "AreaCode=206&VoiceUrl=#{URI.encode_www_form(callback)}&VoiceMethod=GET&FriendlyName=#{URI.encode_www_form(name)}"
+    area_code = Application.get_env(:doorman, :twilio_area_code)
+    body = "AreaCode=#{area_code}&VoiceUrl=#{URI.encode_www_form(callback)}&VoiceMethod=GET&FriendlyName=#{URI.encode_www_form(name)}"
 
     {:ok, res} = HTTPoison.post("https://api.twilio.com/2010-04-01/Accounts/#{account_sid}/IncomingPhoneNumbers.json", body, headers)
     Poison.decode!(res.body)
