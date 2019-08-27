@@ -4,6 +4,10 @@
 
 body, html { margin: 0; padding: 0; }
 
+label.inline {
+  display: inline-block;
+}
+
 .site-header {
   width: 100%;
   background: #fdfdfd;
