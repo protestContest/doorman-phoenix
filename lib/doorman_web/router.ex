@@ -8,6 +8,7 @@ defmodule DoormanWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Phauxth.Authenticate
+    plug Phauxth.Remember, create_session_func: &DoormanWeb.Auth.Utils.create_session/1
   end
 
   scope "/", DoormanWeb do
