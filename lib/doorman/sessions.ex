@@ -35,6 +35,10 @@ defmodule Doorman.Sessions do
     %Session{} |> Session.changeset(attrs) |> Repo.insert()
   end
 
+  def create_user_session(user) do
+    create_session(%{user_id: user.id})
+  end
+
   @doc """
   Deletes a session.
   """
