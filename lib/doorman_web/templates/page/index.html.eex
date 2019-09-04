@@ -1,3 +1,19 @@
 <section>
-  <p>Under construction.</p>
+  <h1>Automatic Building Access</h1>
+  <h2>Have a lot of guests? Let them in automatically</h2>
+  <p>A lot of people live in apartment buildings with an intercom that allows them to unlock the door for visitors. It usually works like this: a guest punches the host's apartment number in the intercom; the host gets a phone call from their door; the guest and host chat for a bit; the host presses "9" on their phone, and the building door buzzes open.</p>
+  <p>If you're having a bunch of people over, though, you have to do this every time someone arrives. Maybe you're using your phone to play some music, and don't keep it in your pocket. Maybe you just don't want to interrupt your conversation.</p>
+  <p>With Doorman, you can have the door open automatically when someone arrives in a specified period.</p>
+</section>
+<section>
+  <h2>Setup</h2>
+  <p>Doorman requires minimal setup:</p>
+  <ol>
+    <li><%= link "Sign up", to: Routes.user_path(@conn, :new) %> here for a Doorman account, and receive a door phone number.</li>
+    <li>Ask your building manager to change the phone number in the intercom to the door phone number you received.</li>
+    <li>Start letting guests in automatically, whenever you choose!</li>
+  </ol>
+</section>
+<section class="_center">
+  <%= link "Sign up", to: Routes.user_path(@conn, :new), class: "small-button" %>
 </section>

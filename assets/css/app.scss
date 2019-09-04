@@ -8,6 +8,14 @@ label.inline {
   display: inline-block;
 }
 
+section {
+  margin-bottom: 2.5em;
+}
+
+._center {
+  text-align: center;
+}
+
 .site-header {
   width: 100%;
   background: #fdfdfd;
@@ -124,6 +132,7 @@ label.inline {
   margin-left: 0.5em;
   line-height: normal;
   height: auto;
+  border-radius: 0.4rem;
 
   &:hover {
     background: #f5faff;
