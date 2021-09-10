@@ -391,7 +391,7 @@
 			"file": "lib/doorman_web/router.ex",
 			"settings":
 			{
-				"buffer_size": 736,
+				"buffer_size": 1049,
 				"line_ending": "Unix"
 			}
 		}
@@ -576,7 +576,7 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/zackm/Projects/doorman"
+		"/Users/zack/Projects/doorman-phoenix"
 	],
 	"file_history":
 	[
@@ -751,7 +751,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 736,
+						"buffer_size": 1049,
 						"regions":
 						{
 						},
