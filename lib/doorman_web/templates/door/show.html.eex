@@ -42,8 +42,8 @@
       <%= for grant <- @grants do %>
         {
           id: <%= grant.id %>,
-          created: new Date("<%= grant.inserted_at %>"),
-          timeout: new Date("<%= grant.timeout %>")
+          created: new Date(<%= Timex.to_unix(grant.inserted_at)*1000 %>),
+          timeout: new Date(<%= Timex.to_unix(grant.timeout)*1000 %>)
         },
       <% end %>
     ];

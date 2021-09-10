@@ -4,6 +4,18 @@
 
 body, html { margin: 0; padding: 0; }
 
+label.inline {
+  display: inline-block;
+}
+
+section {
+  margin-bottom: 2.5em;
+}
+
+._center {
+  text-align: center;
+}
+
 .site-header {
   width: 100%;
   background: #fdfdfd;
@@ -120,6 +132,7 @@ body, html { margin: 0; padding: 0; }
   margin-left: 0.5em;
   line-height: normal;
   height: auto;
+  border-radius: 0.4rem;
 
   &:hover {
     background: #f5faff;
